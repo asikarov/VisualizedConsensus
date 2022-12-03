@@ -11,8 +11,18 @@ const svg = d3.select("#my_dataviz")
 .append("g")
 .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+// color for dots (defined globally so that flip function knows the current state)
+const colorScale1 = d3.scaleLinear()
+	.domain([0, 4000])
+	.range(["#FF0000", "#00FF00"]);
 
-//const myScale = "#FF0000";
+//new colors
+const colorScale2 = d3.scaleLinear()
+    .domain([0, 4000])
+    .range(["#00FF00", "#FF0000"]);
+
+//color mode
+var colorMode = colorScale1;
 
 //Read the data
 d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/2_TwoNum.csv").then( function(data) {
@@ -46,11 +56,6 @@ svg.append('g')
   .attr('class', 'y axis-grid')
   .call(yAxisGrid);
 
-// color for dots
-var colorScale1 = d3.scaleLinear()
-	.domain([0, 4000])
-	.range(["#FF0000", "#00FF00"]);
-
 // Add dots
 svg.append('g')
 .selectAll("dot")
@@ -59,10 +64,11 @@ svg.append('g')
 .attr("cx", function (d) { return x(d.GrLivArea); } )
 .attr("cy", function (d) { return y(d.SalePrice); } )
 .attr("r", 1.5)
-.style('fill', function(d) {return colorScale1(d.GrLivArea); });
+.style('fill', function(d) {return colorMode(d.GrLivArea); });
 })
 
 function editMode() {
+    console.log("editing...");
     const editButton = document.querySelector('#edit');
     editButton.disabled = true;
     const viewButton = document.querySelector('#view');
@@ -72,6 +78,7 @@ function editMode() {
 }
 
 function viewMode() {
+    console.log("viewing...");
     const editButton = document.querySelector('#edit');
     editButton.disabled = false;
     const viewButton = document.querySelector('#view');
@@ -81,9 +88,21 @@ function viewMode() {
 }
 
 //recolor dots
-function update() {
-    editMode();
-    console.log("updating...");
+function flip() {
+    console.log("flipping...");
+
+    //determine new colorScale
+    /*const element = document.querySelector("div > svg > g > g > circle");
+    const scale = element.style.fill;
+    console.log(element);
+    console.log(scale);*/
+    if (colorMode == colorScale1) {
+        colorMode = colorScale2;
+    } else {
+        colorMode = colorScale1;
+    };
+
+
     //Read the data
     d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/2_TwoNum.csv").then( function(data) {
 
@@ -102,11 +121,6 @@ function update() {
     svg.append("g")
     .call(d3.axisLeft(y));
     
-    //new colors
-    var colorScale2 = d3.scaleLinear()
-        .domain([0, 4000])
-        .range(["#00FF00", "#FF0000"]);
-    
     // Add dots
     svg.append('g')
     .selectAll("dot")
@@ -115,6 +129,24 @@ function update() {
     .attr("cx", function (d) { return x(d.GrLivArea); } )
     .attr("cy", function (d) { return y(d.SalePrice); } )
     .attr("r", 1.5)
-    .style('fill', function(d) {return colorScale2(d.GrLivArea); });
+    .style('fill', function(d) {return colorMode(d.GrLivArea); });
     })
+}
+
+//clear
+function clearing() {
+    console.log("clearing...");
+
+    //determine new colorScale
+    /*const element = document.querySelector("div > svg > g > g > circle");
+    const scale = element.style.fill;
+    console.log(element);
+    console.log(scale);*/
+    if (colorMode == colorScale1) {
+        colorMode = colorScale2;
+    } else {
+        colorMode = colorScale1;
+    };
+
+    svg.selectAll('circle').remove();
 }
