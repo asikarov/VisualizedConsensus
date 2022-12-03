@@ -6,6 +6,7 @@ height = 600 - margin.top - margin.bottom;
 // append the svg object to the body of the page
 const svg = d3.select("#my_dataviz")
 .append("svg")
+.attr("id", "graph_svg")
 .attr("width", width + margin.left + margin.right)
 .attr("height", height + margin.top + margin.bottom)
 .append("g")
@@ -23,9 +24,6 @@ const colorScale2 = d3.scaleLinear()
 
 //color mode
 var colorMode = colorScale1;
-
-//Read the data
-d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/2_TwoNum.csv").then( function(data) {
 
 // Add X axis
 const x = d3.scaleLinear()
@@ -46,26 +44,32 @@ svg.append("g")
 const inner_height = height - margin.top - margin.bottom;
 const xAxisGrid = d3.axisBottom(x).tickSize(-2*inner_height).tickFormat('').ticks(20); // 2*inner_height to cover entire graph, not sure why
 svg.append('g')
-  .attr('class', 'x axis-grid')
-  .attr('transform', 'translate(0,' + height + ')')
-  .call(xAxisGrid);
+.attr('class', 'x axis-grid')
+.attr('transform', 'translate(0,' + height + ')')
+.call(xAxisGrid);
 
 const inner_width  = width - margin.left - margin.right;
 const yAxisGrid = d3.axisLeft(y).tickSize(-2*inner_width).tickFormat('').ticks(20); // 2*inner_width to cover entire graph, not sure why
 svg.append('g')
-  .attr('class', 'y axis-grid')
-  .call(yAxisGrid);
+.attr('class', 'y axis-grid')
+.call(yAxisGrid);
 
-// Add dots
-svg.append('g')
-.selectAll("dot")
-.data(data)
-.join("circle")
-.attr("cx", function (d) { return x(d.GrLivArea); } )
-.attr("cy", function (d) { return y(d.SalePrice); } )
-.attr("r", 1.5)
-.style('fill', function(d) {return colorMode(d.GrLivArea); });
-})
+function drawDots() {
+    //Read the data
+    d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/2_TwoNum.csv").then( function(data) {
+
+    // Add dots
+    svg.append('g')
+    .attr("id", "dots")
+    .selectAll("dot")
+    .data(data)
+    .join("circle")
+    .attr("cx", function (d) { return x(d.GrLivArea); } )
+    .attr("cy", function (d) { return y(d.SalePrice); } )
+    .attr("r", 1.5)
+    .style('fill', function(d) {return colorMode(d.GrLivArea); });
+    })
+}
 
 function editMode() {
     console.log("editing...");
@@ -95,18 +99,13 @@ function viewMode() {
 function flip() {
     console.log("flipping...");
 
-    //determine new colorScale
-    /*const element = document.querySelector("div > svg > g > g > circle");
-    const scale = element.style.fill;
-    console.log(element);
-    console.log(scale);*/
     if (colorMode == colorScale1) {
         colorMode = colorScale2;
     } else {
         colorMode = colorScale1;
     };
 
-
+    /*
     //Read the data
     d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/2_TwoNum.csv").then( function(data) {
 
@@ -127,6 +126,7 @@ function flip() {
     
     // Add dots
     svg.append('g')
+    .attr("id", "dots")
     .selectAll("dot")
     .data(data)
     .join("circle")
@@ -135,23 +135,14 @@ function flip() {
     .attr("r", 1.5)
     .style('fill', function(d) {return colorMode(d.GrLivArea); });
     })
+    */
+    clearing();
+    drawDots();
 }
 
 //clear
 function clearing() {
     console.log("clearing...");
-
-    //determine new colorScale
-    /*const element = document.querySelector("div > svg > g > g > circle");
-    const scale = element.style.fill;
-    console.log(element);
-    console.log(scale);*/
-    if (colorMode == colorScale1) {
-        colorMode = colorScale2;
-    } else {
-        colorMode = colorScale1;
-    };
-
     svg.selectAll('circle').remove();
 }
 
@@ -161,12 +152,21 @@ function addDot() {
     const xCoor = coordinates[0];
     const yCoor = coordinates[1];
 
-    var graph = document.getElementById('my_dataviz');
-
     console.log(textInput.value);
     console.log(xCoor);
     console.log(yCoor);
 
     textInput.value = "";
+
+    console.log(d3.select("#dots"));
+
+    d3.select("#dots")
+    .insert("circle", ":first-child")
+    .attr("cx", xCoor)
+    .attr("cy", yCoor)
+    .attr("r", 30)
+    .style('fill', "yellow");
     
 }
+
+drawDots();
