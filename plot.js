@@ -32,6 +32,20 @@ const y = d3.scaleLinear()
 svg.append("g")
 .call(d3.axisLeft(y));
 
+// Add gridlines
+const inner_height = height - margin.top - margin.bottom;
+const xAxisGrid = d3.axisBottom(x).tickSize(-2*inner_height).tickFormat('').ticks(20); // 2*inner_height to cover entire graph, not sure why
+svg.append('g')
+  .attr('class', 'x axis-grid')
+  .attr('transform', 'translate(0,' + height + ')')
+  .call(xAxisGrid);
+
+const inner_width  = width - margin.left - margin.right;
+const yAxisGrid = d3.axisLeft(y).tickSize(-2*inner_width).tickFormat('').ticks(20); // 2*inner_width to cover entire graph, not sure why
+svg.append('g')
+  .attr('class', 'y axis-grid')
+  .call(yAxisGrid);
+
 // color for dots
 var colorScale1 = d3.scaleLinear()
 	.domain([0, 4000])
@@ -48,8 +62,27 @@ svg.append('g')
 .style('fill', function(d) {return colorScale1(d.GrLivArea); });
 })
 
+function editMode() {
+    const editButton = document.querySelector('#edit');
+    editButton.disabled = true;
+    const viewButton = document.querySelector('#view');
+    viewButton.disabled = false;
+    const clearButton = document.querySelector('#clear');
+    clearButton.disabled = false;
+}
+
+function viewMode() {
+    const editButton = document.querySelector('#edit');
+    editButton.disabled = false;
+    const viewButton = document.querySelector('#view');
+    viewButton.disabled = true;
+    const clearButton = document.querySelector('#clear');
+    clearButton.disabled = true;
+}
+
 //recolor dots
-function update(data) {
+function update() {
+    editMode();
     console.log("updating...");
     //Read the data
     d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/2_TwoNum.csv").then( function(data) {

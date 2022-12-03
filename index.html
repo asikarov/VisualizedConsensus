@@ -4,12 +4,17 @@
 <!-- Create a div where the graph will take place -->
 <div id="my_dataviz"></div>
 
-<!-- Update button-->
-<div id="option">
-    <input name="updateButton" 
-           type="button" 
-           value="Update" 
-           onclick="update()" />
+<!-- Buttons-->
+<div id="buttons">
+    <button id="edit" 
+        type="button" 
+        onclick="editMode()">Edit</button>
+    <button id="view" 
+        type="button" 
+        onclick="viewMode()">View</button>   
+    <button id="clear" 
+        type="button" 
+        onclick="update()">Clear</button>      
 </div>
 
 <!-- Load d3.js -->
