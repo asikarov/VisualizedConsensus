@@ -116,7 +116,7 @@ function clearing() {
 }
 
 function addDot() {
-    var textInput = document.getElementById('coordinates');
+    var textInput = document.getElementById('addCoors');
     const coordinates = textInput.value.split(" ");
     const xCoor = coordinates[0];
     const yCoor = coordinates[1];
@@ -134,8 +134,28 @@ function addDot() {
     .attr("cx", x(xCoor))
     .attr("cy", y(yCoor))
     .attr("r", 30)
-    .style('fill', colorMode(xCoor));
-    
+    .style('fill', colorMode(xCoor));   
+}
+
+function deleteDot() {
+    var textInput = document.getElementById('delCoors');
+    const coordinates = textInput.value.split(" ");
+    const xCoor = coordinates[0];
+    const yCoor = coordinates[1];
+
+    console.log(textInput.value);
+    console.log(xCoor);
+    console.log(yCoor);
+
+    textInput.value = "";
+
+    console.log(d3.select("#dots"));
+
+    d3.select("#dots")
+    .selectAll("circle")
+    .filter(function() {return d3.select(this).attr("cx") == x(xCoor);})
+    .filter(function() {return d3.select(this).attr("cy") == y(yCoor);})
+    .remove();  
 }
 
 drawDots();
