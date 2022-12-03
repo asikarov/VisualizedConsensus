@@ -157,6 +157,16 @@ function clearing() {
 
 function addDot() {
     var textInput = document.getElementById('coordinates');
+    const coordinates = textInput.value.split(" ");
+    const xCoor = coordinates[0];
+    const yCoor = coordinates[1];
+
+    var graph = document.getElementById('my_dataviz');
+
     console.log(textInput.value);
+    console.log(xCoor);
+    console.log(yCoor);
+
     textInput.value = "";
+    
 }
