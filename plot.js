@@ -154,3 +154,9 @@ function clearing() {
 
     svg.selectAll('circle').remove();
 }
+
+function addDot() {
+    var textInput = document.getElementById('coordinates');
+    console.log(textInput.value);
+    textInput.value = "";
+}
