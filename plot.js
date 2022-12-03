@@ -1,3 +1,10 @@
+var amt_failures = document.getElementById("failure")
+var btn = document.getElementById("btn")
+
+function f(){
+    console.log(amt_failures.value)
+}
+btn.addEventListener('click', f)
 // set the dimensions and margins of the graph
 const margin = {top: 10, right: 30, bottom: 30, left: 60},
 width = 1000 - margin.left - margin.right,
