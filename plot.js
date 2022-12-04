@@ -1,3 +1,6 @@
+//const fs = require('fs')
+//const fileSystem = require("browserify-fs")
+
 //global array for the coordinates
 var all_coordinates = [];
 
@@ -173,12 +176,63 @@ function deleteDot() {
 
 drawDots();
 
-var btn = document.getElementById("btn")
+var btn = document.getElementById("view")
 function create_JSON() {
     var failures = document.getElementById('failure');
     console.log(failures.value) // amount of failures to be tolerated   
-    //d3.select("#dots")
     console.log(all_coordinates)
 
+    const to_send = {
+        "f": failures.value,
+        "values": all_coordinates
+    }
+    console.log(to_send)
+    const data = JSON.stringify(to_send)
+    
+    //writeFile("./data.json", data );
+
+    // fs.writeFile('data.json', data, err => {
+    //     if (err) {
+    //       throw err
+    //     }
+    //     console.log('JSON data is saved.')
+    //   })
+}
+// when view is clicked, this creat_json file is ran
+
+const sendHTTPRequest = (method, url, data) => {
+    const promise = new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open(method, url);
+        xhr.responseType = 'json';
+
+        if(data) {
+            xhr.setRequestHeader('Content-Type', 'application/json')
+        }
+
+        xhr.onload = () => {
+            if(xhr.status >= 400) {
+                reject(xhr.response)
+            } else {
+                resolve(xhr.response)
+            }
+        }
+        xhr.onerror = () => {
+            reject('Something went wrong')
+        }
+        xhr.send(JSON.stringify(data))
+
+    })
+    return promise;
+}
+const getData = () => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://regres.in/api/users');
+
+}
+const sendData = () => {
+    sendHTTPRequest('POST', some_url, {
+        //content?
+    })
 }
 btn.addEventListener('click', create_JSON);
