@@ -97,9 +97,7 @@ function clearing() {
     console.log("clearing...");
     svg.selectAll('circle').remove();
     //add clearing the whole array here
-    console.log(all_coordinates)
     all_coordinates = []
-    console.log(all_coordinates)
 }
 
 function handleClear() {
