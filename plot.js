@@ -163,7 +163,7 @@ function deleteDot() {
 
     textInput.value = "";
 
-    console.log(d3.select("#dots"));
+   // console.log(d3.select("#dots"));
 
     d3.select("#dots")
     .selectAll("circle")
@@ -171,7 +171,7 @@ function deleteDot() {
     .filter(function() {return d3.select(this).attr("cy") == y(yCoor);})
     .remove();
     
-    console.log(all_coordinates)
+    //console.log(all_coordinates)
 }
 
 drawDots();
@@ -179,16 +179,22 @@ drawDots();
 var btn = document.getElementById("view")
 function create_JSON() {
     var failures = document.getElementById('failure');
-    console.log(failures.value) // amount of failures to be tolerated   
-    console.log(all_coordinates)
+    //console.log(failures.value) // amount of failures to be tolerated   
+    //console.log(all_coordinates)
 
     const to_send = {
-        "f": failures.value,
-        "values": all_coordinates
+        "F": failures.value,
+        "Values": all_coordinates
     }
-    console.log(to_send)
+    //console.log(to_send)
     const data = JSON.stringify(to_send)
-    
+
+    const sendData = () => {
+        sendHTTPRequest('POST', 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/helloWorld', {
+            data
+        })
+    }
+    return data
     //writeFile("./data.json", data );
 
     // fs.writeFile('data.json', data, err => {
@@ -199,7 +205,7 @@ function create_JSON() {
     //   })
 }
 // when view is clicked, this creat_json file is ran
-
+x = btn.addEventListener('click', create_JSON)
 const sendHTTPRequest = (method, url, data) => {
     const promise = new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -227,12 +233,15 @@ const sendHTTPRequest = (method, url, data) => {
 }
 const getData = () => {
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://regres.in/api/users');
+    xhr.open('GET', 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/helloWorld');
 
 }
+
+console.log(x)
 const sendData = () => {
-    sendHTTPRequest('POST', some_url, {
-        //content?
+    sendHTTPRequest('POST', 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/helloWorld', {
+        //content
+        //move this const into the create json???
     })
 }
 btn.addEventListener('click', create_JSON);
