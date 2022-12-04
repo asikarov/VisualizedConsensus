@@ -1,3 +1,6 @@
+//global array for the coordinates
+var all_coordinates = [];
+
 fakeSendData = {"f": 4, "values": [[1,2], [60, 70]]}
 fakeReturnData = {"output":[[1,20,40,0,0,0.25],[1,25,25,5,0,0.25], [2,60,80,9,0,0.75]]}
 
@@ -93,6 +96,8 @@ function viewMode() {
 function clearing() {
     console.log("clearing...");
     svg.selectAll('circle').remove();
+    //add clearing the whole array here
+    all_coordinates = []
 }
 
 function handleClear() {
@@ -133,6 +138,15 @@ function addDot(xCoor, yCoor, color = "grey") {
     .attr("r", 30)
     .style('fill', color);
     //.style('fill', colorMode(100*xCoor/(width))); //manually get text coordinate
+    
+    //adding to the global array
+    xx = parseFloat(xCoor)
+    yy = parseFloat(yCoor)
+    //console.log(xx,yy)
+    temp = []
+    temp.push(xx,yy)
+    console.log(temp)
+    all_coordinates.push(temp)
 }
 
 function addDotText() {
@@ -150,13 +164,13 @@ function addDotText() {
 }
 
 function addDotClick() {
-    console.log("listening for clicks...")
+    //console.log("listening for clicks...")
     d3.select('svg').on("click", function(event) {
         if (mode == "editMode") {
             var coors = [d3.pointer(event)[0], d3.pointer(event)[1]];
-            console.log("coors", coors);
+            //console.log("coors", coors);
             if (coors[0]-62 >= 0 && coors[0]-62 <= 910 && coors[1]-13.21875 >= 0 && coors[1]-13.21875 <= 560) {
-                console.log("adding dot clicking...")
+                //console.log("adding dot clicking...")
                 addDot(coors[0]-62, coors[1]-13.21875); // found through trial and error, may need redo
             }
         }
@@ -168,6 +182,15 @@ function deleteDot() {
     const coordinates = textInput.value.split(" ");
     const xCoor = coordinates[0];
     const yCoor = coordinates[1];
+    for (var i = 0; i < all_coordinates.length; i++) {
+        temp = []
+        xx = x(xCoor)
+        yy = y(yCoor)
+        temp.push(xx,yy)
+        if (temp == all_coordinates[i].toString()) {
+            all_coordinates.splice(i,1);
+        }        
+    }
     if (Number.isInteger(+xCoor) && Number.isInteger(+yCoor)) {
         if (mode != "editMode") {
             editMode();
@@ -182,7 +205,7 @@ function deleteDot() {
 }
 
 function run() {
-    console.log('running...');
+    //console.log('running...');
     if (mode != "newMode") {
         viewMode();
     }
@@ -196,7 +219,7 @@ function drawPlot() {
             const delay = Math.random();
             const round = node[3];
             addDot(x(node[1]), y(node[2]), determineColor(delay, round));
-            console.log(determineColor(delay, node[3]));
+            //console.log(determineColor(delay, node[3]));
         }
     }
     if (mode == "editMode") {
@@ -207,10 +230,73 @@ function drawPlot() {
 }
 
 function colorDelay() {
-    console.log("color delay");
+    //console.log("color delay");
 }
 function colorRound() {
-    console.log("color round");
+    //console.log("color round");
 }
 
 addDotClick();
+
+var btn = document.getElementById("run")
+function create_JSON() {
+    console.log("inhere")
+    var failures = document.getElementById('failure');
+    //console.log(failures.value) // amount of failures to be tolerated   
+    //console.log(all_coordinates)
+
+    const to_send = {
+        "F": parseInt(failures.value),
+        "Values": all_coordinates
+    }
+    //console.log(to_send)
+    const data = JSON.stringify(to_send)
+    //console.log(data)
+    var http = new XMLHttpRequest();
+    var url = 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/cors/helloWorld';
+    //var url1 = 'https://txen52lqrkap5b7new5teqe7rm0hdsqe.lambda-url.us-east-1.on.aws/';
+    http.open('POST', url, true);
+    //http.open('POST', url1, true);
+
+    //Send the proper header information along with the request
+    http.setRequestHeader('Content-Type', 'application/json');
+
+    http.send(data);
+
+    fetch(url)
+    .then(
+        response => response.text() // .json(), .blob(), etc.
+    )
+    console.log("heyyy")
+    console.log(all_coordinates)
+
+}
+// when view is clicked, this creat_json file is ran
+btn.addEventListener('click', create_JSON)
+
+//dont know if i need this below
+const sendHTTPRequest = (method, url, data) => {
+    const promise = new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open(method, url);
+        xhr.responseType = 'json';
+
+        if(data) {
+            xhr.setRequestHeader('Content-Type', 'application/json')
+        }
+
+        xhr.onload = () => {
+            if(xhr.status >= 400) {
+                reject(xhr.response)
+            } else {
+                resolve(xhr.response)
+            }
+        }
+        xhr.onerror = () => {
+            reject('Something went wrong')
+        }
+        xhr.send(JSON.stringify(data))
+
+    })
+    return promise;
+}
