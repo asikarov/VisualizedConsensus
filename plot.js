@@ -71,8 +71,12 @@ function drawDots() {
     })
 }
 
+
+var mode = "editMode";
+
 function editMode() {
     console.log("editing...");
+    mode = "editMode";
     const editButton = document.querySelector('#edit');
     editButton.disabled = true;
     const viewButton = document.querySelector('#view');
@@ -85,6 +89,7 @@ function editMode() {
 
 function viewMode() {
     console.log("viewing...");
+    mode = "viewMode";
     const editButton = document.querySelector('#edit');
     editButton.disabled = false;
     const viewButton = document.querySelector('#view');
@@ -111,8 +116,11 @@ function flip() {
 
 //clear
 function clearing() {
-    console.log("clearing...");
-    svg.selectAll('circle').remove();
+    const confirmation = confirm("Are you sure you want to clear all nodes?");
+    if (confirmation) {
+        console.log("clearing...");
+        svg.selectAll('circle').remove();
+    }
 }
 
 function addDot(xCoor, yCoor) {
@@ -125,26 +133,31 @@ function addDot(xCoor, yCoor) {
 }
 
 function addDotText() {
+    editMode();
     var textInput = document.getElementById('addCoors');
     const coordinates = textInput.value.split(" ");
     const xCoor = coordinates[0];
     const yCoor = coordinates[1];
-    addDot(x(xCoor), y(yCoor));
+    if (Number.isInteger(+xCoor) && Number.isInteger(+yCoor)) {
+        addDot(x(xCoor), y(yCoor));
+    }
     textInput.value = "";
 }
 
 function addDotClick() {
     console.log("listening for clicks...")
     d3.select('svg').on("click", function(event) {
-        console.log("adding dot clicking...")
-        var coors = [d3.pointer(event)[0], d3.pointer(event)[1]];
-        //coors = [event.x, event.y];
-        console.log("coors", coors);
-        addDot(coors[0]-62, coors[1]-13.21875); // found through trial and error, may need redo
+        if (mode == "editMode") {
+            console.log("adding dot clicking...")
+            var coors = [d3.pointer(event)[0], d3.pointer(event)[1]];
+            console.log("coors", coors);
+            addDot(coors[0]-62, coors[1]-13.21875); // found through trial and error, may need redo
+        }
       });
 }
 
 function deleteDot() {
+    editMode();
     var textInput = document.getElementById('delCoors');
     const coordinates = textInput.value.split(" ");
     const xCoor = coordinates[0];
