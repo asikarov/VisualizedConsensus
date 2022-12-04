@@ -115,26 +115,33 @@ function clearing() {
     svg.selectAll('circle').remove();
 }
 
-function addDot() {
+function addDot(xCoor, yCoor) {
+    d3.select("#dots")
+    .insert("circle", ":first-child")
+    .attr("cx", xCoor)
+    .attr("cy", yCoor)
+    .attr("r", 30)
+    .style('fill', colorMode(4000*xCoor/(width)));   // inverse of x function
+}
+
+function addDotText() {
     var textInput = document.getElementById('addCoors');
     const coordinates = textInput.value.split(" ");
     const xCoor = coordinates[0];
     const yCoor = coordinates[1];
-
-    console.log(textInput.value);
-    console.log(xCoor);
-    console.log(yCoor);
-
+    addDot(x(xCoor), y(yCoor));
     textInput.value = "";
+}
 
-    console.log(d3.select("#dots"));
-
-    d3.select("#dots")
-    .insert("circle", ":first-child")
-    .attr("cx", x(xCoor))
-    .attr("cy", y(yCoor))
-    .attr("r", 30)
-    .style('fill', colorMode(xCoor));   
+function addDotClick() {
+    console.log("listening for clicks...")
+    d3.select('svg').on("click", function(event) {
+        console.log("adding dot clicking...")
+        var coors = [d3.pointer(event)[0], d3.pointer(event)[1]];
+        //coors = [event.x, event.y];
+        console.log("coors", coors);
+        addDot(coors[0]-62, coors[1]-13.21875); // found through trial and error, may need redo
+      });
 }
 
 function deleteDot() {
@@ -159,3 +166,4 @@ function deleteDot() {
 }
 
 drawDots();
+addDotClick();
