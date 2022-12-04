@@ -1,3 +1,6 @@
+//global array for the coordinates
+var all_coordinates = [];
+
 // set the dimensions and margins of the graph
 const margin = {top: 10, right: 30, bottom: 30, left: 60},
 width = 1000 - margin.left - margin.right,
@@ -118,6 +121,8 @@ function clearing() {
 function addDot() {
     var textInput = document.getElementById('addCoors');
     const coordinates = textInput.value.split(" ");
+    // adding coordinates to global array to be used to create json
+    all_coordinates.push(coordinates)
     const xCoor = coordinates[0];
     const yCoor = coordinates[1];
 
@@ -127,7 +132,7 @@ function addDot() {
 
     textInput.value = "";
 
-    console.log(d3.select("#dots"));
+//    console.log(d3.select("#dots"));
 
     d3.select("#dots")
     .insert("circle", ":first-child")
@@ -140,12 +145,18 @@ function addDot() {
 function deleteDot() {
     var textInput = document.getElementById('delCoors');
     const coordinates = textInput.value.split(" ");
+    //this for loops deletes the coordinates from the all_coordinates array
+    for (var i = 0; i < all_coordinates.length; i++) {
+        if (coordinates.toString() == all_coordinates[i].toString()) {
+            all_coordinates.splice(i,1);
+        }        
+    }
     const xCoor = coordinates[0];
     const yCoor = coordinates[1];
 
-    console.log(textInput.value);
-    console.log(xCoor);
-    console.log(yCoor);
+    // console.log(textInput.value);
+    // console.log(xCoor);
+    // console.log(yCoor);
 
     textInput.value = "";
 
@@ -155,7 +166,19 @@ function deleteDot() {
     .selectAll("circle")
     .filter(function() {return d3.select(this).attr("cx") == x(xCoor);})
     .filter(function() {return d3.select(this).attr("cy") == y(yCoor);})
-    .remove();  
+    .remove();
+    
+    console.log(all_coordinates)
 }
 
 drawDots();
+
+var btn = document.getElementById("btn")
+function create_JSON() {
+    var failures = document.getElementById('failure');
+    console.log(failures.value) // amount of failures to be tolerated   
+    //d3.select("#dots")
+    console.log(all_coordinates)
+
+}
+btn.addEventListener('click', create_JSON);
