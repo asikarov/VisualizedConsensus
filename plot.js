@@ -15,12 +15,12 @@ const svg = d3.select("#my_dataviz")
 // color for dots (defined globally so that flip function knows the current state)
 const colorScale1 = d3.scaleLinear()
 	.domain([0, 100])
-	.range(["#FF0000", "#00FF00"]);
+	.range(["#FFFE00", "#E900FF"]);
 
 //new colors
 const colorScale2 = d3.scaleLinear()
     .domain([0, 100])
-    .range(["#00FF00", "#FF0000"]);
+    .range(["#E900FF", "#FFFE00"]);
 
 //color mode
 var colorMode = colorScale1;
