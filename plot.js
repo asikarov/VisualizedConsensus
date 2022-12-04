@@ -68,8 +68,6 @@ function editMode() {
     viewButton.disabled = false;
     const clearButton = document.querySelector('#clear');
     clearButton.disabled = false;
-    const flipButton = document.querySelector('#flip');
-    flipButton.disabled = true;
 }
 
 function viewMode() {
@@ -81,8 +79,6 @@ function viewMode() {
     viewButton.disabled = true;
     const clearButton = document.querySelector('#clear');
     clearButton.disabled = true;
-    const flipButton = document.querySelector('#flip');
-    flipButton.disabled = false;
 }
 
 //clear
