@@ -186,15 +186,25 @@ function create_JSON() {
         "F": failures.value,
         "Values": all_coordinates
     }
-    //console.log(to_send)
+    console.log(to_send)
     const data = JSON.stringify(to_send)
+    console.log(data)
+    var http = new XMLHttpRequest();
+    var url = 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/helloWorld';
+    //var params = 'orem=ipsum&name=binny';
+    http.open('POST', url, true);
 
-    const sendData = () => {
-        sendHTTPRequest('POST', 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/helloWorld', {
-            data
-        })
-    }
-    return data
+    //Send the proper header information along with the request
+    http.setRequestHeader('Content-Type', 'application/json');
+
+    http.send(data);
+    // const sendData = () => {
+    //     console.log('inhere')
+    //     // sendHTTPRequest('POST', 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/helloWorld', {
+    //     //     data
+    //     // })
+    //     sendHTTPRequest('POST', 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/helloWorld', data)
+    // }
     //writeFile("./data.json", data );
 
     // fs.writeFile('data.json', data, err => {
@@ -205,7 +215,9 @@ function create_JSON() {
     //   })
 }
 // when view is clicked, this creat_json file is ran
-x = btn.addEventListener('click', create_JSON)
+btn.addEventListener('click', create_JSON)
+
+
 const sendHTTPRequest = (method, url, data) => {
     const promise = new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -237,11 +249,14 @@ const getData = () => {
 
 }
 
-console.log(x)
 const sendData = () => {
     sendHTTPRequest('POST', 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/helloWorld', {
-        //content
+        //content??
         //move this const into the create json???
     })
 }
-btn.addEventListener('click', create_JSON);
+
+
+//btn.addEventListener('click', create_JSON);
+
+
