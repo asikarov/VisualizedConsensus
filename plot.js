@@ -1,5 +1,3 @@
-//const fs = require('fs')
-//const fileSystem = require("browserify-fs")
 
 //global array for the coordinates
 var all_coordinates = [];
@@ -119,19 +117,26 @@ function flip() {
 function clearing() {
     console.log("clearing...");
     svg.selectAll('circle').remove();
+    //remove everything from the global array
 }
 
 function addDot() {
     var textInput = document.getElementById('addCoors');
-    const coordinates = textInput.value.split(" ");
+    var coordinates = textInput.value.split(" ");
     // adding coordinates to global array to be used to create json
-    all_coordinates.push(coordinates)
+    xx = parseFloat(coordinates[0])
+    yy = parseFloat(coordinates[1])
+    console.log(xx,yy)
+    temp = []
+    temp.push(xx,yy)
+    console.log(temp)
+    all_coordinates.push(temp)
     const xCoor = coordinates[0];
     const yCoor = coordinates[1];
 
-    console.log(textInput.value);
-    console.log(xCoor);
-    console.log(yCoor);
+    // console.log(textInput.value);
+    // console.log(xCoor);
+    // console.log(yCoor);
 
     textInput.value = "";
 
@@ -183,21 +188,51 @@ function create_JSON() {
     //console.log(all_coordinates)
 
     const to_send = {
-        "F": failures.value,
+        "F": parseInt(failures.value),
         "Values": all_coordinates
     }
     console.log(to_send)
     const data = JSON.stringify(to_send)
     console.log(data)
     var http = new XMLHttpRequest();
-    var url = 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/helloWorld';
-    //var params = 'orem=ipsum&name=binny';
+    var url = 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/cors/helloWorld';
+    //var url1 = 'https://txen52lqrkap5b7new5teqe7rm0hdsqe.lambda-url.us-east-1.on.aws/';
     http.open('POST', url, true);
+    //http.open('POST', url1, true);
 
     //Send the proper header information along with the request
     http.setRequestHeader('Content-Type', 'application/json');
 
     http.send(data);
+    
+    // http.onload = function() {
+    //     if (http.status != 200) { // analyze HTTP status of the response
+    //       alert(`Error ${http.status}: ${http.statusText}`); // e.g. 404: Not Found
+    //     } else { // show the result
+    //       alert(`Done, got ${http.response.length} bytes`); // response is the server response
+    //     }
+    //   };
+      
+    //   http.onprogress = function(event) {
+    //     if (event.lengthComputable) {
+    //       alert(`Received ${event.loaded} of ${event.total} bytes`);
+    //     } else {
+    //       alert(`Received ${event.loaded} bytes`); // no Content-Length
+    //     }
+      
+    //   };
+      
+    //   http.onerror = function() {
+    //     alert("Request failed");
+    //   };
+    //const url = "https://txen52lqrkap5b7new5teqe7rm0hdsqe.lambda-url.us-east-1.on.aws/";
+    fetch(url)
+    .then(
+        response => response.text() // .json(), .blob(), etc.
+    )
+    // ).then(
+    //     text => console.log(text) // Handle here
+    // );
     // const sendData = () => {
     //     console.log('inhere')
     //     // sendHTTPRequest('POST', 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/helloWorld', {
@@ -245,7 +280,7 @@ const sendHTTPRequest = (method, url, data) => {
 }
 const getData = () => {
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/helloWorld');
+    xhr.open('GET', 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/cors/helloWorld');
 
 }
 
@@ -256,7 +291,13 @@ const sendData = () => {
     })
 }
 
-
+// const url = "https://txen52lqrkap5b7new5teqe7rm0hdsqe.lambda-url.us-east-1.on.aws/";
+// fetch(url)
+//   .then(
+//     response => response.text() // .json(), .blob(), etc.
+//   ).then(
+//     text => console.log(text) // Handle here
+//   );
 //btn.addEventListener('click', create_JSON);
 
 
