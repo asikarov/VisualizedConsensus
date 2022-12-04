@@ -18,19 +18,6 @@ const svg = d3.select("#my_dataviz")
 .append("g")
 .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-// color for dots (defined globally so that flip function knows the current state)
-const colorScale1 = d3.scaleLinear()
-	.domain([0, 100])
-	.range(["#FFFE00", "#E900FF"]);
-
-//new colors
-const colorScale2 = d3.scaleLinear()
-    .domain([0, 100])
-    .range(["#E900FF", "#FFFE00"]);
-
-//color mode
-var colorMode = colorScale1;
-
 // Add X axis
 const x = d3.scaleLinear()
 .domain([0, 100])
@@ -234,6 +221,13 @@ function colorDelay() {
 }
 function colorRound() {
     //console.log("color round");
+}
+
+function updateFailures() {
+    var failures = document.getElementById('failure');
+    document.getElementById("failureNumber").innerHTML = ("Failures: " + failures.value);
+    failures.value = "";
+
 }
 
 addDotClick();
