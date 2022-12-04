@@ -1,3 +1,6 @@
+fakeSendData = {"f": 4, "values": [[1,2], [60, 70]]}
+fakeReturnData = {"output":[[1,20,40,0,0,0.25],[1,25,25,5,0,0.25], [2,60,80,9,0,0.75]]}
+
 // set the dimensions and margins of the graph
 const margin = {top: 10, right: 30, bottom: 30, left: 60},
 width = 1000 - margin.left - margin.right,
@@ -42,14 +45,14 @@ svg.append("g")
 
 // Add gridlines
 const inner_height = height - margin.top - margin.bottom;
-const xAxisGrid = d3.axisBottom(x).tickSize(-2*inner_height).tickFormat('').ticks(20); // 2*inner_height to cover entire graph, not sure why
+const xAxisGrid = d3.axisBottom(x).tickSize(-(97/90)*inner_height).tickFormat('').ticks(20); // 97/90*inner_height to cover entire graph, not sure why
 svg.append('g')
 .attr('class', 'x axis-grid')
 .attr('transform', 'translate(0,' + height + ')')
 .call(xAxisGrid);
 
 const inner_width  = width - margin.left - margin.right;
-const yAxisGrid = d3.axisLeft(y).tickSize(-2*inner_width).tickFormat('').ticks(20); // 2*inner_width to cover entire graph, not sure why
+const yAxisGrid = d3.axisLeft(y).tickSize(-(10/9)*inner_width).tickFormat('').ticks(20); // 10/9*inner_width to cover entire graph, not sure why
 svg.append('g')
 .attr('class', 'y axis-grid')
 .call(yAxisGrid);
@@ -71,6 +74,7 @@ function editMode() {
     viewButton.disabled = false;
     const clearButton = document.querySelector('#clear');
     clearButton.disabled = false;
+    drawPlot();
 }
 
 function viewMode() {
@@ -82,25 +86,53 @@ function viewMode() {
     viewButton.disabled = true;
     const clearButton = document.querySelector('#clear');
     clearButton.disabled = true;
-
+    drawPlot();
 }
 
 //clear
 function clearing() {
+    console.log("clearing...");
+    svg.selectAll('circle').remove();
+}
+
+function handleClear() {
     const confirmation = confirm("Are you sure you want to clear all nodes?");
     if (confirmation) {
-        console.log("clearing...");
-        svg.selectAll('circle').remove();
+        clearing();
     }
 }
 
-function addDot(xCoor, yCoor) {
+function determineColor(delay, round, failed = false) {
+    if (mode == "editMode") {
+        return "grey";
+    }
+    if (mode == "viewMode") {
+        if (failed) {
+            return "black";
+        }
+        if(document.getElementById('delay').checked) {
+            const color = d3.scaleLinear()
+            .domain([0, 0.5, 1])
+            .range(["red", "yellow", "green"]);
+            return color(delay);
+        }
+        if (document.getElementById('round').checked) {
+            const color = d3.scaleLinear()
+            .domain([0, 5, 10])
+            .range(["red", "yellow", "green"]);
+            return color(round);
+        }
+    }
+}
+
+function addDot(xCoor, yCoor, color = "grey") {
     d3.select("#dots")
     .insert("circle", ":first-child")
     .attr("cx", xCoor)
     .attr("cy", yCoor)
     .attr("r", 30)
-    .style('fill', colorMode(100*xCoor/(width))); //manually get text coordinate
+    .style('fill', color);
+    //.style('fill', colorMode(100*xCoor/(width))); //manually get text coordinate
 }
 
 function addDotText() {
@@ -109,7 +141,9 @@ function addDotText() {
     const xCoor = coordinates[0];
     const yCoor = coordinates[1];
     if (Number.isInteger(+xCoor) && Number.isInteger(+yCoor)) {
-        editMode();
+        if (mode != "editMode"){
+            editMode();
+        }
         addDot(x(xCoor), y(yCoor));
     }
     textInput.value = "";
@@ -119,10 +153,12 @@ function addDotClick() {
     console.log("listening for clicks...")
     d3.select('svg').on("click", function(event) {
         if (mode == "editMode") {
-            console.log("adding dot clicking...")
             var coors = [d3.pointer(event)[0], d3.pointer(event)[1]];
             console.log("coors", coors);
-            addDot(coors[0]-62, coors[1]-13.21875); // found through trial and error, may need redo
+            if (coors[0]-62 >= 0 && coors[0]-62 <= 910 && coors[1]-13.21875 >= 0 && coors[1]-13.21875 <= 560) {
+                console.log("adding dot clicking...")
+                addDot(coors[0]-62, coors[1]-13.21875); // found through trial and error, may need redo
+            }
         }
       });
 }
@@ -133,7 +169,9 @@ function deleteDot() {
     const xCoor = coordinates[0];
     const yCoor = coordinates[1];
     if (Number.isInteger(+xCoor) && Number.isInteger(+yCoor)) {
-        editMode();
+        if (mode != "editMode") {
+            editMode();
+        }
         d3.select("#dots")
         .selectAll("circle")
         .filter(function() {return d3.select(this).attr("cx") == x(xCoor);})
@@ -141,6 +179,31 @@ function deleteDot() {
         .remove();
     }
     textInput.value = "";  
+}
+
+function run() {
+    console.log('running...');
+    if (mode != "newMode") {
+        viewMode();
+    }
+    drawPlot();
+}
+
+function drawPlot() {
+    clearing();
+    if (mode == "viewMode") {
+        for (const node of fakeReturnData["output"]) {
+            const delay = Math.random();
+            const round = node[3];
+            addDot(x(node[1]), y(node[2]), determineColor(delay, round));
+            console.log(determineColor(delay, node[3]));
+        }
+    }
+    if (mode == "editMode") {
+        for (const node of fakeSendData["values"]) {
+            addDot(x(node[0]), y(node[1]));
+        }
+    }
 }
 
 function colorDelay() {
