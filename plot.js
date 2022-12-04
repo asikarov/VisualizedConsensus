@@ -135,11 +135,12 @@ function addDotText() {
 
 function addDotClick() {
     console.log("listening for clicks...")
-    svg.on("click", function(event) {
+    d3.select('svg').on("click", function(event) {
         console.log("adding dot clicking...")
         var coors = [d3.pointer(event)[0], d3.pointer(event)[1]];
+        //coors = [event.x, event.y];
         console.log("coors", coors);
-        addDot(coors[0], coors[1])
+        addDot(coors[0]-62, coors[1]-13.21875); // found through trial and error, may need redo
       });
 }
 
