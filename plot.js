@@ -57,7 +57,10 @@ svg.append('g')
 svg.append('g')
 .attr("id", "dots");
 
+// edit or view mode
 var mode = "editMode";
+
+
 
 function editMode() {
     console.log("editing...");
@@ -79,6 +82,7 @@ function viewMode() {
     viewButton.disabled = true;
     const clearButton = document.querySelector('#clear');
     clearButton.disabled = true;
+
 }
 
 //clear
@@ -137,6 +141,13 @@ function deleteDot() {
         .remove();
     }
     textInput.value = "";  
+}
+
+function colorDelay() {
+    console.log("color delay");
+}
+function colorRound() {
+    console.log("color round");
 }
 
 addDotClick();
