@@ -363,16 +363,9 @@ function create_JSON() {
 btn.addEventListener('click', create_JSON)
 
 function parse_data (x) {
-    console.log("called")
-    console.log(x)
     for(var key in x) {
-        temp = []
         console.log(x[key])
-        temp.push(x[key])
         view_json.push(x[key])
-        for (var i = 0; i< x[key].length; i++) {
-            //console.log(x[key][i])
-        }
      }
     console.log(view_json)
 }
