@@ -83,8 +83,6 @@ function viewMode() {
 function clearing() {
     console.log("clearing...");
     svg.selectAll('circle').remove();
-    //add clearing the whole array here
-    all_coordinates = []
 }
 
 function handleClear() {
@@ -92,6 +90,8 @@ function handleClear() {
     if (confirmation) {
         clearing();
     }
+    //add clearing the whole array here
+    all_coordinates = []
 }
 
 function determineColor(delay, round, failed = false) {
@@ -115,6 +115,15 @@ function determineColor(delay, round, failed = false) {
             return color(round);
         }
     }
+}
+
+function addDotRaw(xCoor, yCoor, color = "grey") {
+    d3.select("#dots")
+    .insert("circle", ":first-child")
+    .attr("cx", xCoor)
+    .attr("cy", yCoor)
+    .attr("r", 30)
+    .style('fill', color);
 }
 
 function addDot(xCoor, yCoor, color = "grey") {
@@ -200,18 +209,22 @@ function run() {
 }
 
 function drawPlot() {
+    const storeNodes = all_coordinates;
     clearing();
     if (mode == "viewMode") {
         for (const node of fakeReturnData["output"]) {
             const delay = Math.random();
             const round = node[3];
-            addDot(x(node[1]), y(node[2]), determineColor(delay, round));
+            addDotRaw(x(node[1]), y(node[2]), determineColor(delay, round));
             //console.log(determineColor(delay, node[3]));
         }
     }
     if (mode == "editMode") {
-        for (const node of fakeSendData["values"]) {
-            addDot(x(node[0]), y(node[1]));
+        console.log("storeNodes: ", storeNodes);
+        for (const node of storeNodes) {
+            addDotRaw(node[0], node[1]);
+            console.log("coors: ", node[0], node[1]);
+            console.log("mapped coors: ", x(node[0]), y(node[1]));
         }
     }
 }
