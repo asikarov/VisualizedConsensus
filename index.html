@@ -5,51 +5,52 @@
 <h1>Welcome to our visual consensus</h1>
 <h2>To start the visualization please click on the graph to add points</h2>
 <form>
-    <label style="margin: 0;" for="f">Add node in format "x y"</label>
-    <input style="margin: 0;" id = "addCoors" type = "text">
-    <input style="margin: 0;" id = 'addButton'type="button" value="Add" onclick="addDotText()">
-
-    <label style="margin: 2000;" for="f">Number of rounds:</label>
-    <input style="margin: 2000;" type = "text" id = "rounds">
-    <input style="margin: 2000;" type="button" value="Submit" onclick="updateRounds()">
-</form>
-<form>
-    <label for="f">Remove node in format "x y"</label>
-    <input id = "delCoors" type = "text">
-    <input id = 'delButton' type="button" value="Remove" onclick="deleteDot()">
-    
-    <label for="f">Number of failures:</label>
-    <input type = "text" id = "failure">
-    <input type="button" value="Submit" onclick="updateFailures()">
-</form>
-<div id="my_dataviz"></div>
-
-<!-- Buttons-->
-<div id="buttons">
     <button id="edit"
-        style="margin: 0;"
         type="button" 
         onclick="editMode()"
         disabled = true>Edit</button>
     <button id="view"
-        style="margin: 0;" 
+        style="margin-bottom: 10px;" 
         type="button" 
-        onclick="viewMode()">View</button>   
+        onclick="viewMode()">View</button> 
+</form>
+<form>
+    <label style="margin-left: 26px;" for="f">Add node in format "x y":</label>
+    <input id = "addCoors" type = "text" style = "margin-bottom: 10px;">
+    <input id = 'addButton'type="button" value="Add" onclick="addDotText()">
+
+    <label style="margin-left: 56px;" for="f">Number of rounds:</label>
+    <input type = "text" id = "rounds">
+    <input type="button" value="Submit" onclick="updateRounds()">
+</form>
+<div>
+    <label for="f">Remove node in format "x y":</label>
+    <input id = "delCoors" type = "text">
+    <input id = 'delButton' type="button" value="Remove" onclick="deleteDot()">
+    
+    <label style="margin-left: 26px;" for="f">Number of failures:</label>
+    <input type = "text" id = "failure">
+    <input type="button" value="Submit" onclick="updateFailures()">
     <button id="clear"
-        style="margin: 0;" 
-        type="button" 
-        onclick="handleClear()"
-        disabled=true>Clear</button>
+    style = "margin-left: 125px;"
+    type="button" 
+    onclick="handleClear()"
+    disabled=true>Reset</button>
+</div>
+<div id="my_dataviz"></div>
+
+<!-- Buttons-->
+<div style="display: inline;" id="buttons"><br>  
+    <p style="display: inline;  margin-left: 60px;" id="failureNumber">Failures: 0</p> 
+    <p style="display: inline;" id="roundNumber">Rounds: 0</p>
     <button id="run"
-        style="margin: 0;" 
+    style="margin-left: 293px; display: inline;"
         type="button" 
-        onclick="run()">Run</button><br>
-    <p style="margin: 0; display: inline;" id="failureNumber">Failures: 0</p> 
-    <p style="margin: 500; display: inline;" id="roundNumber">Rounds: 0</p><br>
-    <input type="radio" name="heatMap" id="delay" value="delay" checked='true' onclick="drawPlot()">Delay<br> 
-    <input type="radio" name="heatMap" id="round" value="round" onclick="drawPlot()">Round<br>   
+        onclick="run()">Run</button> 
+    <input style="display: inline; margin-left: 315px;" type="radio" name="heatMap" id="delay" value="delay" checked='true' onclick="drawPlot()">Delay 
+    <input style="display: inline;" type="radio" name="heatMap" id="round" value="round" onclick="drawPlot()">Round  
 </div>
 
 <!-- Load d3.js -->
 <script src="https://d3js.org/d3.v6.js"></script>
-<script src="plot.js"></script>
+<script src="app.js"></script>

@@ -65,7 +65,7 @@ function editMode() {
     const viewButton = document.querySelector('#view');
     viewButton.disabled = false;
     const clearButton = document.querySelector('#clear');
-    if (all_coordinates.length == 0) {
+    if (isBlankCanvas()) {
         clearButton.disabled = true;
     } else {
         clearButton.disabled = false;
@@ -92,14 +92,21 @@ function clearing() {
 }
 
 function handleClear() {
-    const confirmation = confirm("Are you sure you want to clear all nodes?");
+    const confirmation = confirm("Are you sure you want to reset?");
     if (confirmation) {
         clearing();
+        //add clearing the whole array here
+        all_coordinates = []
+        button = document.getElementById('clear');
+        button.disabled = true;
+
+        var failures = document.getElementById('failure');
+        failures.value = "0";
+        updateFailures();
+        var rounds = document.getElementById('rounds');
+        rounds.value = "0";
+        updateRounds();
     }
-    //add clearing the whole array here
-    all_coordinates = []
-    button = document.getElementById('clear');
-    button.disabled = true;
 }
 
 function determineColor(delay, round, failed = false) {
@@ -161,7 +168,8 @@ function addDotText() {
     const coordinates = textInput.value.split(" ");
     const xCoor = coordinates[0];
     const yCoor = coordinates[1];
-    if (Number.isInteger(+xCoor) && Number.isInteger(+yCoor)) {
+    console.log(((+xCoor) >= 0 && (+yCoor) >= 0));
+    if ((+xCoor) >= 0 && (+xCoor) <= 100 && (+yCoor) >= 0 && (+yCoor) <= 100) {
         if (mode != "editMode"){
             editMode();
         }
@@ -189,30 +197,32 @@ function deleteDot() {
     const coordinates = textInput.value.split(" ");
     const xCoor = coordinates[0];
     const yCoor = coordinates[1];
-    for (var i = 0; i < all_coordinates.length; i++) {
-        temp = []
-        xx = x(xCoor)
-        yy = y(yCoor)
-        temp.push(xx,yy)
-        if (temp == all_coordinates[i].toString()) {
-            all_coordinates.splice(i,1);
-        }        
-    }
     if (Number.isInteger(+xCoor) && Number.isInteger(+yCoor)) {
         if (mode != "editMode") {
             editMode();
         }
+        for (var i = 0; i < all_coordinates.length; i++) {
+            temp = []
+            xx = x(xCoor)
+            yy = y(yCoor)
+            temp.push(xx,yy)
+            if (temp == all_coordinates[i].toString()) {
+                all_coordinates.splice(i,1);
+            }        
+        }
+
         d3.select("#dots")
         .selectAll("circle")
         .filter(function() {return d3.select(this).attr("cx") == x(xCoor);})
         .filter(function() {return d3.select(this).attr("cy") == y(yCoor);})
         .remove();
+
+        if (isBlankCanvas()) {
+            button = document.getElementById('clear');
+            button.disabled = true;
+        }
     }
     textInput.value = "";
-    if (all_coordinates.length == 0) {
-        button = document.getElementById('clear');
-        button.disabled = true;
-    }
 }
 
 function run() {
@@ -244,25 +254,44 @@ function drawPlot() {
     }
 }
 
-function colorDelay() {
-    //console.log("color delay");
-}
-function colorRound() {
-    //console.log("color round");
-}
-
 function updateFailures() {
     var failures = document.getElementById('failure');
-    global_failures = failures.value
-    document.getElementById("failureNumber").innerHTML = ("Failures: " + failures.value);
-    failures.value = "";
+    if (Number.isInteger(Number(failures.value)) && failures.value >= 0) {
+        global_failures = failures.value
+        document.getElementById("failureNumber").innerHTML = ("Failures: " + failures.value);
+        failures.value = "";
+        if (mode != "editMode") {
+            editMode();
+        }
+        button = document.getElementById('clear');
+        if (isBlankCanvas()) {
+            button.disabled = true;
+        } else {
+            button.disabled = false;
+        }
+    }
 }
 
 function updateRounds() {
     var rounds = document.getElementById('rounds');
-    global_rounds = rounds.value
-    document.getElementById("roundNumber").innerHTML = ("Rounds: " + rounds.value);
-    rounds.value = "";
+    if (Number.isInteger(Number(rounds.value)) && rounds.value >= 0) {
+        global_rounds = rounds.value
+        document.getElementById("roundNumber").innerHTML = ("Rounds: " + rounds.value);
+        rounds.value = "";
+        if (mode != "editMode") {
+            editMode();
+        }
+        button = document.getElementById('clear');
+        if (isBlankCanvas()) {
+            button.disabled = true;
+        } else {
+            button.disabled = false;
+        }
+    }
+}
+
+function isBlankCanvas() {
+    return (all_coordinates.length == 0 && global_failures == 0 && global_rounds == 0)
 }
 
 addDotClick();
