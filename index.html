@@ -5,9 +5,14 @@
 <h1>Welcome to our visual consensus</h1>
 <h2>To start the visualization please click on the graph to add points</h2>
 <form>
-    <label for="f">Amount of failures:</label>
+    <label for="f">Number of failures:</label>
     <input type = "text" id = "failure">
     <input type="button" value="Submit" onclick="updateFailures()">
+</form>
+<form>
+    <label for="f">Number of rounds:</label>
+    <input type = "text" id = "rounds">
+    <input type="button" value="Submit" onclick="updateRounds()">
 </form>
 <form>
     <label for="f">Add node in format "x y"</label>
@@ -37,6 +42,7 @@
         type="button" 
         onclick="run()">Run</button>
     <p id="failureNumber">Failures: 0</p><br>
+    <p id="roundNumber">Rounds: 0</p><br>
     <input type="radio" name="heatMap" id="delay" value="delay" checked='true' onclick="colorDelay()">Delay<br> 
     <input type="radio" name="heatMap" id="round" value="round" onclick="colorRound()">Round<br>   
 </div>

@@ -240,7 +240,12 @@ function updateFailures() {
     var failures = document.getElementById('failure');
     document.getElementById("failureNumber").innerHTML = ("Failures: " + failures.value);
     failures.value = "";
+}
 
+function updateRounds() {
+    var rounds = document.getElementById('rounds');
+    document.getElementById("roundNumber").innerHTML = ("Rounds: " + rounds.value);
+    rounds.value = "";
 }
 
 addDotClick();
