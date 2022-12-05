@@ -299,11 +299,12 @@ function isBlankCanvas() {
 
 addDotClick();
 
-var btn = document.getElementById("run")
+var btn_run = document.getElementById("run")
 var btn_rounds = document.getElementById("rounds")
 function create_JSON() {
     console.log("inhere")
     var failures1 = document.getElementById('failure');
+    //dont think i need this local rounds
     var rounds = document.getElementById('rounds');
     //console.log(failures.value) // amount of failures to be tolerated   
     //console.log(all_coordinates)
@@ -360,14 +361,15 @@ function create_JSON() {
 }
 
 // when view is clicked, this create_json file is ran
-btn.addEventListener('click', create_JSON)
+btn_run.addEventListener('click', create_JSON)
 
 function parse_data (x) {
     for(var key in x) {
         console.log(x[key])
         view_json.push(x[key])
      }
-    console.log(view_json)
+    console.log("in parse")
+    console.log((view_json))
 }
 //dont know if i need this below
 // const sendHTTPRequest = (method, url, data) => {
