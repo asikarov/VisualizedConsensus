@@ -1,5 +1,7 @@
-//global array for the coordinates
+//global variables
 var all_coordinates = [];
+var global_failures = 0
+var global_rounds = 0
 
 fakeSendData = {"f": 4, "values": [[1,2], [60, 70]]}
 fakeReturnData = {"output":[[1,20,40,0,0,0.25],[1,25,25,5,0,0.25], [2,60,80,9,0,0.75]]}
@@ -238,12 +240,14 @@ function colorRound() {
 
 function updateFailures() {
     var failures = document.getElementById('failure');
+    global_failures = failures.value
     document.getElementById("failureNumber").innerHTML = ("Failures: " + failures.value);
     failures.value = "";
 }
 
 function updateRounds() {
     var rounds = document.getElementById('rounds');
+    global_rounds = rounds.value
     document.getElementById("roundNumber").innerHTML = ("Rounds: " + rounds.value);
     rounds.value = "";
 }
@@ -251,19 +255,23 @@ function updateRounds() {
 addDotClick();
 
 var btn = document.getElementById("run")
+var btn_rounds = document.getElementById("rounds")
 function create_JSON() {
     console.log("inhere")
-    var failures = document.getElementById('failure');
+    var failures1 = document.getElementById('failure');
+    var rounds = document.getElementById('rounds');
     //console.log(failures.value) // amount of failures to be tolerated   
     //console.log(all_coordinates)
-
+    console.log(failures1.value)
     const to_send = {
-        "F": parseInt(failures.value),
+        "F": parseInt(global_failures),
+        "R": parseInt(global_rounds),
         "Values": all_coordinates
     }
+    console.log(to_send)
     //console.log(to_send)
     const data = JSON.stringify(to_send)
-    //console.log(data)
+    console.log(data)
     var http = new XMLHttpRequest();
     var url = 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/cors/helloWorld';
     //var url1 = 'https://txen52lqrkap5b7new5teqe7rm0hdsqe.lambda-url.us-east-1.on.aws/';
