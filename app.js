@@ -248,11 +248,11 @@ function drawPlot() {
     const storeNodes = all_coordinates;
     clearing();
     if (mode == "viewMode") {
-        for (const node of fakeReturnData["output"]) {
+        for (var i = 0; i < view_json.length; i++) {
+            console.log("in the new new")
             const delay = Math.random();
-            const round = node[3];
-            addDotRaw(x(node[1]), y(node[2]), determineColor(delay, round));
-            //console.log(determineColor(delay, node[3]));
+            const round = view_json[3];
+            addDotRaw((view_json[i][1]), (view_json[i][1]), determineColor(delay, round));
         }
     }
     if (mode == "editMode") {
