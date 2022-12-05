@@ -1,5 +1,8 @@
 //global variables
 var all_coordinates = [];
+var view_json = [];
+var spliited;
+var data_return;
 var global_failures = 0
 var global_rounds = 0
 
@@ -310,10 +313,10 @@ function create_JSON() {
         "R": parseInt(global_rounds),
         "Values": all_coordinates
     }
-    console.log(to_send)
+    //console.log(to_send)
     //console.log(to_send)
     const data = JSON.stringify(to_send)
-    console.log(data)
+    //console.log(data)
     var http = new XMLHttpRequest();
     var url = 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/cors/helloWorld';
     //var url1 = 'https://txen52lqrkap5b7new5teqe7rm0hdsqe.lambda-url.us-east-1.on.aws/';
@@ -324,41 +327,78 @@ function create_JSON() {
     http.setRequestHeader('Content-Type', 'application/json');
 
     http.send(data);
-
-    fetch(url)
-    .then(
-        response => response.text() // .json(), .blob(), etc.
-    )
-    console.log("heyyy")
-    console.log(all_coordinates)
+    http.onload = function() {
+        if (http.status != 200) { // analyze HTTP status of the response
+          alert(`Error ${http.status}: ${http.statusText}`); // e.g. 404: Not Found
+        } else { // show the result
+            console.log("in http")
+            console.log(http.response)
+            data_return = http.response
+            console.log(typeof(data_return))
+            console.log((data_return.length))
+            splitted = data_return.slice(11,data_return.length - 2)
+            //var splitted1 = splitted.split('],[')
+            //var splitted1 = splitted.split("[" + splitted + "]");
+            var splitted1 = JSON.parse("[" + splitted + "]");
+            console.log(splitted)
+            console.log((splitted1))
+            parse_data(splitted1);
+        }
+      };
+    // fetch(url)
+    // .then(
+    //     response => response.text() // .json(), .blob(), etc.
+    // )
+    //  .then(
+    //     console.log("in data"),
+    //     data => (console.log(data))
+    // )
+    // console.log("heyyy")
+    //console.log(all_coordinates)
+    
 
 }
-// when view is clicked, this creat_json file is ran
+
+// when view is clicked, this create_json file is ran
 btn.addEventListener('click', create_JSON)
 
-//dont know if i need this below
-const sendHTTPRequest = (method, url, data) => {
-    const promise = new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open(method, url);
-        xhr.responseType = 'json';
-
-        if(data) {
-            xhr.setRequestHeader('Content-Type', 'application/json')
+function parse_data (x) {
+    console.log("called")
+    console.log(x)
+    for(var key in x) {
+        temp = []
+        console.log(x[key])
+        temp.push(x[key])
+        view_json.push(x[key])
+        for (var i = 0; i< x[key].length; i++) {
+            //console.log(x[key][i])
         }
-
-        xhr.onload = () => {
-            if(xhr.status >= 400) {
-                reject(xhr.response)
-            } else {
-                resolve(xhr.response)
-            }
-        }
-        xhr.onerror = () => {
-            reject('Something went wrong')
-        }
-        xhr.send(JSON.stringify(data))
-
-    })
-    return promise;
+     }
+    console.log(view_json)
 }
+//dont know if i need this below
+// const sendHTTPRequest = (method, url, data) => {
+//     const promise = new Promise((resolve, reject) => {
+//         const xhr = new XMLHttpRequest();
+//         xhr.open(method, url);
+//         xhr.responseType = 'json';
+
+//         if(data) {
+//             xhr.setRequestHeader('Content-Type', 'application/json')
+//         }
+
+//         xhr.onload = () => {
+//             if(xhr.status >= 400) {
+//                 reject(xhr.response)
+//             } else {
+//                 resolve(xhr.response)
+//             }
+//         }
+//         xhr.onerror = () => {
+//             reject('Something went wrong')
+//         }
+//         xhr.send(JSON.stringify(data))
+
+//     })
+//     return promise;
+//}
