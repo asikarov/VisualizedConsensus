@@ -65,7 +65,11 @@ function editMode() {
     const viewButton = document.querySelector('#view');
     viewButton.disabled = false;
     const clearButton = document.querySelector('#clear');
-    clearButton.disabled = false;
+    if (all_coordinates.length == 0) {
+        clearButton.disabled = true;
+    } else {
+        clearButton.disabled = false;
+    }
     drawPlot();
 }
 
@@ -94,6 +98,8 @@ function handleClear() {
     }
     //add clearing the whole array here
     all_coordinates = []
+    button = document.getElementById('clear');
+    button.disabled = true;
 }
 
 function determineColor(delay, round, failed = false) {
@@ -137,6 +143,9 @@ function addDot(xCoor, yCoor, color = "grey") {
     .style('fill', color);
     //.style('fill', colorMode(100*xCoor/(width))); //manually get text coordinate
     
+    button = document.getElementById('clear');
+    button.disabled = false;
+
     //adding to the global array
     xx = parseFloat(xCoor)
     yy = parseFloat(yCoor)
@@ -199,7 +208,11 @@ function deleteDot() {
         .filter(function() {return d3.select(this).attr("cy") == y(yCoor);})
         .remove();
     }
-    textInput.value = "";  
+    textInput.value = "";
+    if (all_coordinates.length == 0) {
+        button = document.getElementById('clear');
+        button.disabled = true;
+    }
 }
 
 function run() {

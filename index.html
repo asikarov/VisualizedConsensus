@@ -5,46 +5,49 @@
 <h1>Welcome to our visual consensus</h1>
 <h2>To start the visualization please click on the graph to add points</h2>
 <form>
-    <label for="f">Number of failures:</label>
-    <input type = "text" id = "failure">
-    <input type="button" value="Submit" onclick="updateFailures()">
-</form>
-<form>
-    <label for="f">Number of rounds:</label>
-    <input type = "text" id = "rounds">
-    <input type="button" value="Submit" onclick="updateRounds()">
-</form>
-<form>
-    <label for="f">Add node in format "x y"</label>
-    <input id = "addCoors" type = "text">
-    <input id = 'addButton'type="button" value="Add" onclick="addDotText()">
+    <label style="margin: 0;" for="f">Add node in format "x y"</label>
+    <input style="margin: 0;" id = "addCoors" type = "text">
+    <input style="margin: 0;" id = 'addButton'type="button" value="Add" onclick="addDotText()">
+
+    <label style="margin: 2000;" for="f">Number of rounds:</label>
+    <input style="margin: 2000;" type = "text" id = "rounds">
+    <input style="margin: 2000;" type="button" value="Submit" onclick="updateRounds()">
 </form>
 <form>
     <label for="f">Remove node in format "x y"</label>
     <input id = "delCoors" type = "text">
     <input id = 'delButton' type="button" value="Remove" onclick="deleteDot()">
+    
+    <label for="f">Number of failures:</label>
+    <input type = "text" id = "failure">
+    <input type="button" value="Submit" onclick="updateFailures()">
 </form>
 <div id="my_dataviz"></div>
 
 <!-- Buttons-->
 <div id="buttons">
     <button id="edit"
+        style="margin: 0;"
         type="button" 
         onclick="editMode()"
         disabled = true>Edit</button>
-    <button id="view" 
+    <button id="view"
+        style="margin: 0;" 
         type="button" 
         onclick="viewMode()">View</button>   
-    <button id="clear" 
+    <button id="clear"
+        style="margin: 0;" 
         type="button" 
-        onclick="handleClear()">Clear</button>
-     <button id="run" 
+        onclick="handleClear()"
+        disabled=true>Clear</button>
+    <button id="run"
+        style="margin: 0;" 
         type="button" 
-        onclick="run()">Run</button>
-    <p id="failureNumber">Failures: 0</p><br>
-    <p id="roundNumber">Rounds: 0</p><br>
-    <input type="radio" name="heatMap" id="delay" value="delay" checked='true' onclick="colorDelay()">Delay<br> 
-    <input type="radio" name="heatMap" id="round" value="round" onclick="colorRound()">Round<br>   
+        onclick="run()">Run</button><br>
+    <p style="margin: 0; display: inline;" id="failureNumber">Failures: 0</p> 
+    <p style="margin: 500; display: inline;" id="roundNumber">Rounds: 0</p><br>
+    <input type="radio" name="heatMap" id="delay" value="delay" checked='true' onclick="drawPlot()">Delay<br> 
+    <input type="radio" name="heatMap" id="round" value="round" onclick="drawPlot()">Round<br>   
 </div>
 
 <!-- Load d3.js -->
