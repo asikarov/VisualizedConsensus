@@ -250,9 +250,11 @@ function drawPlot() {
     if (mode == "viewMode") {
         for (var i = 0; i < view_json.length; i++) {
             console.log("in the new new")
+            console.log(view_json[i][1])
+            console.log(view_json[i][2])
             const delay = Math.random();
             const round = view_json[3];
-            addDotRaw((view_json[i][1]), (view_json[i][1]), determineColor(delay, round));
+            addDotRaw((view_json[i][1]), (view_json[i][2]), determineColor(delay, round));
         }
     }
     if (mode == "editMode") {
