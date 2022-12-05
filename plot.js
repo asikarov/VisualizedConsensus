@@ -1,4 +1,4 @@
-//global array for the coordinates
+//global variables
 var all_coordinates = [];
 var global_failures = 0
 var global_rounds = 0
