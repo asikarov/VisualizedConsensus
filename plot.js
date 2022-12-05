@@ -251,14 +251,17 @@ function updateRounds() {
 addDotClick();
 
 var btn = document.getElementById("run")
+var btn_rounds = document.getElementById("rounds")
 function create_JSON() {
     console.log("inhere")
     var failures = document.getElementById('failure');
+    var rounds = document.getElementById('rounds');
     //console.log(failures.value) // amount of failures to be tolerated   
     //console.log(all_coordinates)
 
     const to_send = {
         "F": parseInt(failures.value),
+        "R": parseInt(rounds.value),
         "Values": all_coordinates
     }
     //console.log(to_send)
