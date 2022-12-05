@@ -3,8 +3,10 @@ var all_coordinates = [];
 var view_json = [];
 var spliited;
 var data_return;
-var global_failures = 0
-var global_rounds = 0
+var global_edit_failures = 0
+var global_edit_rounds = 0
+var global_view_failures = 0
+var global_view_rounds = 0
 
 fakeSendData = {"f": 4, "values": [[1,2], [60, 70]]}
 fakeReturnData = {"output":[[1,20,40,0,0,0.25],[1,25,25,5,0,0.25], [2,60,80,9,0,0.75]]}
@@ -74,6 +76,8 @@ function editMode() {
         clearButton.disabled = false;
     }
     drawPlot();
+    document.getElementById("failureNumber").innerHTML = ("Failures: " + global_edit_failures);
+    document.getElementById("roundNumber").innerHTML = ("Rounds: " + global_edit_rounds);
 }
 
 function viewMode() {
@@ -86,6 +90,8 @@ function viewMode() {
     const clearButton = document.querySelector('#clear');
     clearButton.disabled = true;
     drawPlot();
+    document.getElementById("failureNumber").innerHTML = ("Failures: " + global_view_failures);
+    document.getElementById("roundNumber").innerHTML = ("Rounds: " + global_view_rounds);
 }
 
 //clear
@@ -230,7 +236,9 @@ function deleteDot() {
 
 function run() {
     //console.log('running...');
-    if (mode != "newMode") {
+    global_view_failures = global_edit_failures;
+    global_view_rounds = global_edit_rounds;
+    if (mode != "viewMode") {
         viewMode();
     }
     drawPlot();
@@ -259,9 +267,9 @@ function drawPlot() {
 
 function updateFailures() {
     var failures = document.getElementById('failure');
-    if (Number.isInteger(Number(failures.value)) && failures.value >= 0) {
-        global_failures = failures.value
-        document.getElementById("failureNumber").innerHTML = ("Failures: " + failures.value);
+    if (Number.isInteger(Number(failures.value)) && (Number(failures.value) > 0 || failures.value == "0")) {
+        global_edit_failures = Number(failures.value)
+        document.getElementById("failureNumber").innerHTML = ("Failures: " + Number(failures.value));
         failures.value = "";
         if (mode != "editMode") {
             editMode();
@@ -277,9 +285,9 @@ function updateFailures() {
 
 function updateRounds() {
     var rounds = document.getElementById('rounds');
-    if (Number.isInteger(Number(rounds.value)) && rounds.value >= 0) {
-        global_rounds = rounds.value
-        document.getElementById("roundNumber").innerHTML = ("Rounds: " + rounds.value);
+    if (Number.isInteger(Number(rounds.value)) && (Number(rounds.value) > 0 || rounds.value == "0")) {
+        global_edit_rounds = Number(rounds.value)
+        document.getElementById("roundNumber").innerHTML = ("Rounds: " + Number(rounds.value));
         rounds.value = "";
         if (mode != "editMode") {
             editMode();
@@ -294,7 +302,7 @@ function updateRounds() {
 }
 
 function isBlankCanvas() {
-    return (all_coordinates.length == 0 && global_failures == 0 && global_rounds == 0)
+    return (all_coordinates.length == 0 && global_edit_failures == 0 && global_edit_rounds == 0)
 }
 
 addDotClick();
@@ -310,8 +318,8 @@ function create_JSON() {
     //console.log(all_coordinates)
     console.log(failures1.value)
     const to_send = {
-        "F": parseInt(global_failures),
-        "R": parseInt(global_rounds),
+        "F": parseInt(global_edit_failures),
+        "R": parseInt(global_edit_rounds),
         "Values": all_coordinates
     }
     //console.log(to_send)
