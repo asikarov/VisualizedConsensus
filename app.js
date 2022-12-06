@@ -238,20 +238,21 @@ function run() {
     //console.log('running...');
     global_view_failures = global_edit_failures;
     global_view_rounds = global_edit_rounds;
-    if (mode != "viewMode") {
-        viewMode();
+    create_JSON()
+    setTimeout(function(){
+        if (mode != "viewMode") {
+        viewMode()
     }
-    drawPlot();
+    drawPlot(); }, 17000)
 }
 
 function drawPlot() {
+    console.log("when I click run .. drawplot")
+    console.log(view_json.length)
     const storeNodes = all_coordinates;
     clearing();
     if (mode == "viewMode") {
         for (var i = 0; i < view_json.length; i++) {
-            console.log("in the new new")
-            console.log(view_json[i][1])
-            console.log(view_json[i][2])
             const delay = Math.random();
             const round = view_json[3];
             addDotRaw((view_json[i][1]), (view_json[i][2]), determineColor(delay, round));
@@ -310,15 +311,16 @@ function isBlankCanvas() {
 addDotClick();
 
 var btn_run = document.getElementById("run")
+//btn_run.addEventListener('click', create_JSON())
 var btn_rounds = document.getElementById("rounds")
 function create_JSON() {
     console.log("inhere")
-    var failures1 = document.getElementById('failure');
     //dont think i need this local rounds
+    var failures1 = document.getElementById('failure');
     var rounds = document.getElementById('rounds');
     //console.log(failures.value) // amount of failures to be tolerated   
     //console.log(all_coordinates)
-    console.log(failures1.value)
+    //console.log(failures1.value)
     const to_send = {
         "F": parseInt(global_edit_failures),
         "R": parseInt(global_edit_rounds),
@@ -342,17 +344,17 @@ function create_JSON() {
         if (http.status != 200) { // analyze HTTP status of the response
           alert(`Error ${http.status}: ${http.statusText}`); // e.g. 404: Not Found
         } else { // show the result
-            console.log("in http")
-            console.log(http.response)
+            //console.log("in http")
+            //console.log(http.response)
             data_return = http.response
             console.log(typeof(data_return))
-            console.log((data_return.length))
+            // console.log((data_return.length))
             splitted = data_return.slice(11,data_return.length - 2)
             //var splitted1 = splitted.split('],[')
             //var splitted1 = splitted.split("[" + splitted + "]");
             var splitted1 = JSON.parse("[" + splitted + "]");
-            console.log(splitted)
-            console.log((splitted1))
+            // console.log(splitted)
+            // console.log((splitted1))
             parse_data(splitted1);
         }
       };
@@ -371,15 +373,15 @@ function create_JSON() {
 }
 
 // when view is clicked, this create_json file is ran
-btn_run.addEventListener('click', create_JSON)
+//btn_run.addEventListener('click', create_JSON)
 
 function parse_data (x) {
     for(var key in x) {
-        console.log(x[key])
+        //console.log(x[key])
         view_json.push(x[key])
      }
-    console.log("in parse")
-    console.log((view_json))
+    // console.log("in parse")
+    // console.log((view_json))
 }
 //dont know if i need this below
 // const sendHTTPRequest = (method, url, data) => {
