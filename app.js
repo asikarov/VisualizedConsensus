@@ -118,24 +118,26 @@ function handleClear() {
     }
 }
 
-function determineColor(delay, round, failed = false) {
+function determineColor(delay, round, maxDelay, maxRounds, failed = 0) {
     if (mode == "editMode") {
         return "grey";
     }
     if (mode == "viewMode") {
-        if (failed) {
+        if (failed == 1) {
             return "black";
         }
         if(document.getElementById('delay').checked) {
             const color = d3.scaleLinear()
-            .domain([0, 0.5, 1])
+            .domain([0, maxDelay/2, maxDelay])
             .range(["red", "yellow", "green"]);
+            console.log(delay, maxDelay);
             return color(delay);
         }
         if (document.getElementById('round').checked) {
             const color = d3.scaleLinear()
-            .domain([0, 5, 10])
+            .domain([0, maxRounds/2, maxRounds])
             .range(["red", "yellow", "green"]);
+            console.log(round, maxRounds);
             return color(round);
         }
     }
@@ -146,7 +148,7 @@ function addDotRaw(xCoor, yCoor, color = "grey") {
     .insert("circle", ":first-child")
     .attr("cx", xCoor)
     .attr("cy", yCoor)
-    .attr("r", 30)
+    .attr("r", 10)
     .style('fill', color);
 }
 
@@ -155,7 +157,7 @@ function addDot(xCoor, yCoor, color = "grey") {
     .insert("circle", ":first-child")
     .attr("cx", xCoor)
     .attr("cy", yCoor)
-    .attr("r", 30)
+    .attr("r", 10)
     .style('fill', color);
     //.style('fill', colorMode(100*xCoor/(width))); //manually get text coordinate
     
@@ -244,7 +246,8 @@ function run() {
         if (mode != "viewMode") {
         viewMode()
     }
-    drawPlot(); }, 17000)
+//    drawPlot(); 
+}, 17000)
 }
 
 function drawPlot() {
@@ -253,10 +256,19 @@ function drawPlot() {
     const storeNodes = all_coordinates;
     clearing();
     if (mode == "viewMode") {
+        var delays = [];
+        var rounds = [];
         for (var i = 0; i < view_json.length; i++) {
-            const delay = Math.random();
-            const round = view_json[3];
-            addDotRaw((view_json[i][1]), (view_json[i][2]), determineColor(delay, round));
+            delays.push(Number(view_json[i][5]));
+            rounds.push(Number(view_json[i][3]));
+        }
+        const maxDelay = Math.max(...delays);
+        const maxRounds = Math.max(...rounds);
+        for (var i = 0; i < view_json.length; i++) {
+            const delay = view_json[i][5];
+            const round = view_json[i][3];
+            const failed = view_json[i][4];
+            addDotRaw((view_json[i][1]), (view_json[i][2]), determineColor(delay, round, maxDelay, maxRounds, failed));
         }
     }
     if (mode == "editMode") {
