@@ -239,6 +239,7 @@ function run() {
     global_view_failures = global_edit_failures;
     global_view_rounds = global_edit_rounds;
     create_JSON()
+    view_json = []
     setTimeout(function(){
         if (mode != "viewMode") {
         viewMode()
