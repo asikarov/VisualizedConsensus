@@ -11,6 +11,7 @@ var global_view_rounds = 0
 fakeSendData = {"f": 4, "values": [[1,2], [60, 70]]}
 fakeReturnData = {"output":[[1,20,40,0,0,0.25],[1,25,25,5,0,0.25], [2,60,80,9,0,0.75]]}
 
+
 // set the dimensions and margins of the graph
 const margin = {top: 10, right: 30, bottom: 30, left: 60},
 width = 1000 - margin.left - margin.right,
@@ -56,6 +57,73 @@ svg.append('g')
 
 svg.append('g')
 .attr("id", "dots");
+
+// var tooltip = d3.select("body")
+//     .append("div")
+//     .style("position", "absolute")
+//     .style("z-index", "10")
+//     .style("visibility", "hidden")
+//     .style("background", "#000")
+//     .text("a simple tooltip");
+
+// var tooltip = d3.select("#my_dataviz")
+//     .append("div")
+//     .style("opacity", 0)
+//     .attr("class", "tooltip")
+//     .style("background-color", "white")
+//     .style("border", "solid")
+//     .style("border-width", "2px")
+//     .style("border-radius", "5px")
+//     .style("padding", "5px")
+
+var tooltip = d3.select("#my_dataviz")
+  .append("div")
+  .style("opacity", 1)
+  .attr("class", "tooltip")
+  .style("background-color", "white")
+  .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+  .style("position", "absolute")
+  .style("z-index", "10")
+  .style("visibility", "visibile")
+  .text("a simple tooltip");
+  // Three function that change the tooltip when user hover / move / leave a cell
+//     var mouseover = function(d) {
+//     Tooltip
+//       .style("opacity", 1)
+//     d3.select(this)
+//       .style("stroke", "green")
+//       .style("opacity", 1)
+//   }
+//     var decide_values = function(d, x, y) {
+//         var display = 0
+//         for (var i = 0; i < d.length; i++) {
+//             display = 0
+//             if ((d[i][1] == x) & (d[i][2] == y)) {
+//                 display = d[i]//[3]
+//                 console.log("in decide" +display)
+//                 mousemove(display)
+//                 break
+//             }
+//         }
+          
+//   }
+//   var mousemove = function(d) {
+//     Tooltip
+//       .html("The round of<br>this node is: "+ d)
+//       .style("stroke", "orange")
+//     //   .style("left", (d3.mouse(this)[0]+70) + "px")
+//     //   .style("top", (d3.mouse(this)[1]) + "px")
+//   }
+//   var mouseleave = function(d) {
+//     Tooltip
+//       .style("opacity", 0)
+//     d3.select(this)
+//       .style("stroke", "none")
+//       .style("opacity", 0.8)
+//   }
 
 // edit or view mode
 var mode = "editMode";
@@ -149,7 +217,34 @@ function addDotRaw(xCoor, yCoor, color = "grey") {
     .attr("cx", xCoor)
     .attr("cy", yCoor)
     .attr("r", 10)
-    .style('fill', color);
+    .style('fill', color)
+    // .on("mouseover", mouseover)
+    // //.on("mousemove", mousemove(view_json, view_json[0][0]))
+    // .on("mousemove", decide_values(view_json, xCoor, yCoor))
+    // .on("mouseleave", mouseleave)
+    .on("mousemove", function(d) {
+        return tooltip.text(d.value + ": " + d.value);
+      })
+    .on("mousemove", function(d) {
+        console.log(xCoor)
+        var display = 0
+        for (var i = 0; i < view_json.length; i++) {
+            display = 0
+            if ((view_json[i][1] == xCoor) & (view_json[i][2] == yCoor)) {
+                display = view_json[i]//[3]
+                console.log("in decide" +display)
+                break
+            }
+        }
+        tooltip
+        .style("visibility", "visible")
+        .html("The round of<br>this node is: "+ display)
+//       .style("stroke", "orange")
+      })
+    .on("mouseout", function(d) {
+        return tooltip.style("visibility", "hidden");
+      });
+
 }
 
 function addDot(xCoor, yCoor, color = "grey") {
@@ -246,8 +341,8 @@ function run() {
         if (mode != "viewMode") {
         viewMode()
     }
-//    drawPlot(); 
-}, 17000)
+    drawPlot(); 
+}, 7000)
 }
 
 function drawPlot() {
@@ -394,8 +489,9 @@ function parse_data (x) {
         view_json.push(x[key])
      }
     // console.log("in parse")
-    // console.log((view_json))
+     console.log((view_json))
 }
+{
 //dont know if i need this below
 // const sendHTTPRequest = (method, url, data) => {
 //     const promise = new Promise((resolve, reject) => {
@@ -422,3 +518,4 @@ function parse_data (x) {
 //     })
 //     return promise;
 //}
+}
