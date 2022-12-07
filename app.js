@@ -57,6 +57,19 @@ svg.append('g')
 svg.append('g')
 .attr("id", "dots");
 
+var tooltip = d3.select("#my_dataviz")
+  .append("div")
+  .style("opacity", 1)
+  .attr("class", "tooltip")
+  .style("background-color", "white")
+  .style("border", "solid")
+  .style("border-width", "2px")
+  .style("border-radius", "5px")
+  .style("padding", "5px")
+  .style("position", "absolute")
+  .style("z-index", "10")
+  .style("visibility", "visibile")
+  .text("a simple tooltip");
 // edit or view mode
 var mode = "editMode";
 
@@ -149,7 +162,26 @@ function addDotRaw(xCoor, yCoor, color = "grey") {
     .attr("cx", xCoor)
     .attr("cy", yCoor)
     .attr("r", 10)
-    .style('fill', color);
+    .style('fill', color)
+    .on("mousemove", function(d) {
+        return tooltip.text(d.value + ": " + d.value);
+      })
+    .on("mousemove", function(d) {
+        var display = 0
+        for (var i = 0; i < view_json.length; i++) {
+            display = 0
+            if ((view_json[i][1] == xCoor) & (view_json[i][2] == yCoor)) {
+                display = view_json[i]//[3]
+                break
+            }
+        }
+        tooltip
+        .style("visibility", "visible")
+        .html("The round of<br>this node is: "+ display)
+      })
+    .on("mouseout", function(d) {
+        return tooltip.style("visibility", "hidden");
+      });
 }
 
 function addDot(xCoor, yCoor, color = "grey") {
