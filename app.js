@@ -34,7 +34,7 @@ svg.append("g")
 .call(d3.axisBottom(x));
 
 // Add Y axis
-const y = d3.scaleLinear()
+const y = d3.scaleLinear() 
 .domain([0, 100])
 .range([ height, 0]);
 svg.append("g")
@@ -66,10 +66,11 @@ var tooltip = d3.select("#my_dataviz")
   .style("border-width", "2px")
   .style("border-radius", "5px")
   .style("padding", "5px")
-  .style("position", "absolute")
+  .style("position", "relative")
   .style("z-index", "10")
   .style("visibility", "hidden")
-  .text("a simple tooltip");
+  .text("a simple tooltip")
+  //.style("float: right");
 var mode = "editMode";
 
 
@@ -174,9 +175,9 @@ function addDotRaw(xCoor, yCoor, color = "grey") {
             var round = 0
             var delay = 0
             if ((view_json[i][1] == xCoor) & (view_json[i][2] == yCoor)) {
-                display = view_json[i]//[3]
-                xx = view_json[i][1]
-                yy = view_json[i][2]
+                display = view_json[i]
+                xx = Math.round(x.invert(view_json[i][1]) * 100) / 100
+                yy = Math.round(y.invert(view_json[i][2]) * 100) / 100
                 round = view_json[i][3]
                 delay = view_json[i][5]
                 break
@@ -288,9 +289,10 @@ function run() {
     setTimeout(function(){
         if (mode != "viewMode") {
         viewMode()
+    } else{
+        drawPlot();     
     }
-//    drawPlot(); 
-}, 17000)
+}, 7000)
 }
 
 function drawPlot() {
