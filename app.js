@@ -34,7 +34,7 @@ svg.append("g")
 .call(d3.axisBottom(x));
 
 // Add Y axis
-const y = d3.scaleLinear()
+const y = d3.scaleLinear() 
 .domain([0, 100])
 .range([ height, 0]);
 svg.append("g")
@@ -57,7 +57,20 @@ svg.append('g')
 svg.append('g')
 .attr("id", "dots");
 
-// edit or view mode
+var tooltip = d3.select("#tooltip")
+  .append("div")
+  .style("opacity", 1)
+  .attr("class", "tooltip")
+  .style("background-color", "white")
+  .style("border", "solid")
+  .style("border-width", "2px")
+  .style("border-radius", "5px")
+  .style("padding", "5px")
+  //.style("position", "relative")
+  .style("z-index", "10")
+  .style("visibility", "hidden")
+  .text("a simple tooltip")
+  //.style("float: right");
 var mode = "editMode";
 
 
@@ -149,7 +162,38 @@ function addDotRaw(xCoor, yCoor, color = "grey") {
     .attr("cx", xCoor)
     .attr("cy", yCoor)
     .attr("r", 10)
-    .style('fill', color);
+    .style('fill', color)
+    .on("mousemove", function(d) {
+        return tooltip.text(d.value + ": " + d.value);
+      })
+    .on("mousemove", function(d) {
+        var display = 0
+        for (var i = 0; i < view_json.length; i++) {
+            display = 0
+            var xx = 0
+            var yy = 0
+            var round = 0
+            var delay = 0
+            if ((view_json[i][1] == xCoor) & (view_json[i][2] == yCoor)) {
+                display = view_json[i]
+                xx = Math.round(x.invert(view_json[i][1]) * 100) / 100
+                yy = Math.round(y.invert(view_json[i][2]) * 100) / 100
+                round = view_json[i][3]
+                delay = view_json[i][5]
+                break
+            }
+        }
+        tooltip
+        .style("visibility", "visible")
+        .html(
+            "The round of node this node is: "+ round + "<br>"
+            + "The x,y coordinates are: " + xx +", "+ yy + "<br>"
+            + "The delay is: " + delay + "<br>"
+            )
+      })
+    .on("mouseout", function(d) {
+        return tooltip.style("visibility", "hidden");
+      });
 }
 
 function addDot(xCoor, yCoor, color = "grey") {
@@ -170,7 +214,7 @@ function addDot(xCoor, yCoor, color = "grey") {
     //console.log(xx,yy)
     temp = []
     temp.push(xx,yy)
-    console.log(temp)
+    //console.log(temp)
     all_coordinates.push(temp)
 }
 
@@ -245,9 +289,10 @@ function run() {
     setTimeout(function(){
         if (mode != "viewMode") {
         viewMode()
+    } else{
+        drawPlot();     
     }
-//    drawPlot(); 
-}, 17000)
+}, 7000)
 }
 
 function drawPlot() {
@@ -394,7 +439,7 @@ function parse_data (x) {
         view_json.push(x[key])
      }
     // console.log("in parse")
-    // console.log((view_json))
+    console.log((view_json))
 }
 //dont know if i need this below
 // const sendHTTPRequest = (method, url, data) => {

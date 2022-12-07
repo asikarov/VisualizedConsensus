@@ -37,8 +37,10 @@
     onclick="handleClear()"
     disabled=true>Reset</button>
 </div>
-<div id="my_dataviz"></div>
-
+<div class = "container">
+    <div id="my_dataviz"></div>
+    <div id="tooltip"></div>
+</div>
 <!-- Buttons-->
 <div style="display: inline;" id="buttons"><br>  
     <p style="display: inline;  margin-left: 60px;" id="failureNumber">Failures: 0</p> 
@@ -47,10 +49,11 @@
     style="margin-left: 293px; display: inline;"
         type="button" 
         onclick="run()">Run</button> 
-    <input style="display: inline; margin-left: 315px;" type="radio" name="heatMap" id="delay" value="delay" checked='true' onclick="drawPlot()">Delay 
+    <input style="display: inline; margin-left: 315px;" type="radio" name="heatMap" id="delay" value="delay" checked='true' onclick="drawPlot()">Real Time 
     <input style="display: inline;" type="radio" name="heatMap" id="round" value="round" onclick="drawPlot()">Round  
 </div>
 </body>
 <!-- Load d3.js -->
 <script src="https://d3js.org/d3.v6.js"></script>
 <script src="app.js"></script>
+<link rel="stylesheet" href="styles.css">
