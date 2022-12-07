@@ -221,18 +221,15 @@ function addDotRaw(xCoor, yCoor, color = "grey") {
     // .on("mouseover", mouseover)
     // //.on("mousemove", mousemove(view_json, view_json[0][0]))
     // .on("mousemove", decide_values(view_json, xCoor, yCoor))
-    // .on("mouseleave", mouseleave)
     .on("mousemove", function(d) {
         return tooltip.text(d.value + ": " + d.value);
       })
     .on("mousemove", function(d) {
-        console.log(xCoor)
         var display = 0
         for (var i = 0; i < view_json.length; i++) {
             display = 0
             if ((view_json[i][1] == xCoor) & (view_json[i][2] == yCoor)) {
                 display = view_json[i]//[3]
-                console.log("in decide" +display)
                 break
             }
         }
