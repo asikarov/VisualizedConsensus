@@ -37,8 +37,10 @@
     onclick="handleClear()"
     disabled=true>Reset</button>
 </div>
-<div id="my_dataviz"></div>
-
+<div class = "container">
+    <div id="my_dataviz"></div>
+    <div id="tooltip"></div>
+</div>
 <!-- Buttons-->
 <div style="display: inline;" id="buttons"><br>  
     <p style="display: inline;  margin-left: 60px;" id="failureNumber">Failures: 0</p> 
@@ -54,3 +56,4 @@
 <!-- Load d3.js -->
 <script src="https://d3js.org/d3.v6.js"></script>
 <script src="app.js"></script>
+<link rel="stylesheet" href="styles.css">

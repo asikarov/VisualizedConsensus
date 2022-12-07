@@ -1,1 +1,24 @@
 /* styles sheet */
+#tooltip {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+}
+/*
+.container {
+    width:500px;
+    position: fixed;
+}
+
+#my_visdata {
+    display: inline-block;
+    position: absolute;
+    left: 0;
+}
+*/
+#tooltip{
+    display: inline-block;
+    position:absolute;
+    right:200px;
+    top:220px;
+}
