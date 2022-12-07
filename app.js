@@ -68,9 +68,8 @@ var tooltip = d3.select("#my_dataviz")
   .style("padding", "5px")
   .style("position", "absolute")
   .style("z-index", "10")
-  .style("visibility", "visibile")
+  .style("visibility", "hidden")
   .text("a simple tooltip");
-// edit or view mode
 var mode = "editMode";
 
 
@@ -170,14 +169,26 @@ function addDotRaw(xCoor, yCoor, color = "grey") {
         var display = 0
         for (var i = 0; i < view_json.length; i++) {
             display = 0
+            var xx = 0
+            var yy = 0
+            var round = 0
+            var delay = 0
             if ((view_json[i][1] == xCoor) & (view_json[i][2] == yCoor)) {
                 display = view_json[i]//[3]
+                xx = view_json[i][1]
+                yy = view_json[i][2]
+                round = view_json[i][3]
+                delay = view_json[i][5]
                 break
             }
         }
         tooltip
         .style("visibility", "visible")
-        .html("The round of<br>this node is: "+ display)
+        .html(
+            "The round of node this node is: "+ round + "<br>"
+            + "The x,y coordinates are: " + xx +", "+ yy + "<br>"
+            + "The delay is: " + delay + "<br>"
+            )
       })
     .on("mouseout", function(d) {
         return tooltip.style("visibility", "hidden");
@@ -202,7 +213,7 @@ function addDot(xCoor, yCoor, color = "grey") {
     //console.log(xx,yy)
     temp = []
     temp.push(xx,yy)
-    console.log(temp)
+    //console.log(temp)
     all_coordinates.push(temp)
 }
 
@@ -426,7 +437,7 @@ function parse_data (x) {
         view_json.push(x[key])
      }
     // console.log("in parse")
-    // console.log((view_json))
+    console.log((view_json))
 }
 //dont know if i need this below
 // const sendHTTPRequest = (method, url, data) => {
