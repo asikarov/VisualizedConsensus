@@ -174,21 +174,26 @@ function addDotRaw(xCoor, yCoor, color = "grey") {
             var yy = 0
             var round = 0
             var delay = 0
+            var failed = "True"
             if ((view_json[i][1] == xCoor) & (view_json[i][2] == yCoor)) {
                 display = view_json[i]
                 xx = Math.round(x.invert(view_json[i][1]) * 100) / 100
                 yy = Math.round(y.invert(view_json[i][2]) * 100) / 100
                 round = view_json[i][3]
                 delay = view_json[i][5]
+                if (view_json[i][4] == 0) {
+                    failed = "False"
+                }
                 break
             }
         }
         tooltip
         .style("visibility", "visible")
         .html(
-            "The round of node this node is: "+ round + "<br>"
+            "The round of this node is: "+ round + "<br>"
             + "The x,y coordinates are: " + xx +", "+ yy + "<br>"
-            + "The delay is: " + delay + "<br>"
+            + "Elapsed time: " + delay + " ms" +  "<br>"
+            + "Failed: " + failed +  "<br>"
             )
       })
     .on("mouseout", function(d) {
