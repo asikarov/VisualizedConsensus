@@ -7,6 +7,7 @@ var global_edit_failures = 0
 var global_edit_rounds = 0
 var global_view_failures = 0
 var global_view_rounds = 0
+var global_view_round = -1
 
 fakeSendData = {"f": 4, "values": [[1,2], [60, 70]]}
 fakeReturnData = {"output":[[1,20,40,0,0,0.25],[1,25,25,5,0,0.25], [2,60,80,9,0,0.75]]}
@@ -89,6 +90,8 @@ function editMode() {
         clearButton.disabled = false;
     }
     drawPlot();
+    const roundButton = document.querySelector('#viewRoundButton');
+    roundButton.disabled = true;
     document.getElementById("failureNumber").innerHTML = ("Failures: " + global_edit_failures);
     document.getElementById("roundNumber").innerHTML = ("Rounds: " + global_edit_rounds);
 }
@@ -103,6 +106,8 @@ function viewMode() {
     const clearButton = document.querySelector('#clear');
     clearButton.disabled = true;
     drawPlot();
+    const roundButton = document.querySelector('#viewRoundButton');
+    roundButton.disabled = false;
     document.getElementById("failureNumber").innerHTML = ("Failures: " + global_view_failures);
     document.getElementById("roundNumber").innerHTML = ("Rounds: " + global_view_rounds);
 }
@@ -287,6 +292,7 @@ function deleteDot() {
 
 function run() {
     //console.log('running...');
+    global_view_round = -1;
     global_view_failures = global_edit_failures;
     global_view_rounds = global_edit_rounds;
     create_JSON()
@@ -300,7 +306,7 @@ function run() {
 }, 7000)
 }
 
-function drawPlot() {
+function drawPlot(viewRound = -1) {
     console.log("when I click run .. drawplot")
     console.log(view_json.length)
     const storeNodes = all_coordinates;
@@ -318,7 +324,14 @@ function drawPlot() {
             const delay = view_json[i][5];
             const round = view_json[i][3];
             const failed = view_json[i][4];
-            addDotRaw((view_json[i][1]), (view_json[i][2]), determineColor(delay, round, maxDelay, maxRounds, failed));
+            if (viewRound == -1){
+                addDotRaw((view_json[i][1]), (view_json[i][2]), determineColor(delay, round, maxDelay, maxRounds, failed));
+            }
+            else {
+                if (round == viewRound) {
+                    addDotRaw((view_json[i][1]), (view_json[i][2]), determineColor(delay, round, maxDelay, maxRounds, failed));
+                }
+            }
         }
     }
     if (mode == "editMode") {
@@ -365,6 +378,21 @@ function updateRounds() {
             button.disabled = false;
         }
     }
+}
+
+function updateViewRound() {
+    var round = document.getElementById('addViewRound');
+    console.log("first condition: ", Number.isInteger(Number(round.value)));
+    console.log("second condition: ", (round.value == "0"));
+    if (Number.isInteger(Number(round.value)) && (Number(round.value) > 0 || round.value == "0" || round.value == "-1")) {
+        global_view_round = Number(round.value);
+        drawPlot(global_view_round);
+        round.value = "";
+        console.log("should be updating");
+    }
+    console.log("updating view round");
+    
+
 }
 
 function isBlankCanvas() {
