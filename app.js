@@ -153,7 +153,7 @@ function determineColor(delay, round, maxDelay, maxRounds, failed = 0) {
         }
         if (document.getElementById('round').checked) {
             const color = d3.scaleLinear()
-            .domain([0, maxRounds/2, maxRounds])
+            .domain([1, (maxRounds+1)/2, maxRounds])
             .range(["red", "yellow", "green"]);
             console.log(round, maxRounds);
             return color(round);
@@ -303,7 +303,7 @@ function run() {
     } else{
         drawPlot();     
     }
-}, 7000)
+}, 5000)
 }
 
 function drawPlot(viewRound = -1) {
