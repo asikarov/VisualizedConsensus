@@ -175,6 +175,7 @@ function addDotRaw(xCoor, yCoor, color = "grey") {
         var display = 0
         for (var i = 0; i < view_json.length; i++) {
             display = 0
+            var node_id = 0
             var xx = 0
             var yy = 0
             var round = 0
@@ -182,6 +183,7 @@ function addDotRaw(xCoor, yCoor, color = "grey") {
             var failed = "True"
             if ((view_json[i][1] == xCoor) & (view_json[i][2] == yCoor)) {
                 display = view_json[i]
+                node_id = view_json[i][0]
                 xx = Math.round(x.invert(view_json[i][1]) * 100) / 100
                 yy = Math.round(y.invert(view_json[i][2]) * 100) / 100
                 round = view_json[i][3]
@@ -195,7 +197,8 @@ function addDotRaw(xCoor, yCoor, color = "grey") {
         tooltip
         .style("visibility", "visible")
         .html(
-            "The round of this node is: "+ round + "<br>"
+            "Node ID: "+ node_id + "<br>"
+            + "The round of this node is: "+ round + "<br>"
             + "The x,y coordinates are: " + xx +", "+ yy + "<br>"
             + "Elapsed time: " + delay + " ms" +  "<br>"
             + "Failed: " + failed +  "<br>"
