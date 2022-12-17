@@ -1,3 +1,5 @@
+//app.js
+
 //global variables
 var all_coordinates = [];
 var view_json = [];
@@ -8,9 +10,7 @@ var global_edit_rounds = 0
 var global_view_failures = 0
 var global_view_rounds = 0
 var global_view_round = -1
-
-fakeSendData = {"f": 4, "values": [[1,2], [60, 70]]}
-fakeReturnData = {"output":[[1,20,40,0,0,0.25],[1,25,25,5,0,0.25], [2,60,80,9,0,0.75]]}
+var mode = "editMode";
 
 // set the dimensions and margins of the graph
 const margin = {top: 10, right: 30, bottom: 30, left: 60},
@@ -55,9 +55,11 @@ svg.append('g')
 .attr('class', 'y axis-grid')
 .call(yAxisGrid);
 
+// Add element for dots
 svg.append('g')
 .attr("id", "dots");
 
+// Tooltip setup for hovering on dots for info
 var tooltip = d3.select("#tooltip")
   .append("div")
   .style("opacity", 1)
@@ -67,15 +69,11 @@ var tooltip = d3.select("#tooltip")
   .style("border-width", "2px")
   .style("border-radius", "5px")
   .style("padding", "5px")
-  //.style("position", "relative")
   .style("z-index", "10")
   .style("visibility", "hidden")
   .text("a simple tooltip")
-  //.style("float: right");
-var mode = "editMode";
 
-
-
+// Changes mode to edit mode  
 function editMode() {
     console.log("editing...");
     mode = "editMode";
@@ -83,19 +81,27 @@ function editMode() {
     editButton.disabled = true;
     const viewButton = document.querySelector('#view');
     viewButton.disabled = false;
+
+    // Checks whether clear button should be available
     const clearButton = document.querySelector('#clear');
     if (isBlankCanvas()) {
         clearButton.disabled = true;
     } else {
         clearButton.disabled = false;
     }
+
     drawPlot();
+
+    // Disable the viewing nodes by round button
     const roundButton = document.querySelector('#viewRoundButton');
     roundButton.disabled = true;
+
+    // Display the failures and rounds that they last had when they were editing
     document.getElementById("failureNumber").innerHTML = ("Failures: " + global_edit_failures);
     document.getElementById("roundNumber").innerHTML = ("Rounds: " + global_edit_rounds);
 }
 
+// Changes mode to view mode
 function viewMode() {
     console.log("viewing...");
     mode = "viewMode";
@@ -105,28 +111,36 @@ function viewMode() {
     viewButton.disabled = true;
     const clearButton = document.querySelector('#clear');
     clearButton.disabled = true;
+
     drawPlot();
+
+    // Eisable the viewing nodes by round button
     const roundButton = document.querySelector('#viewRoundButton');
     roundButton.disabled = false;
+
+    // Display the failures and rounds from their last run
     document.getElementById("failureNumber").innerHTML = ("Failures: " + global_view_failures);
     document.getElementById("roundNumber").innerHTML = ("Rounds: " + global_view_rounds);
 }
 
-//clear
+// Clear all dots
 function clearing() {
     console.log("clearing...");
     svg.selectAll('circle').remove();
 }
 
+// Handle when the user presses clear
 function handleClear() {
     const confirmation = confirm("Are you sure you want to reset?");
     if (confirmation) {
+        // Clear dots
         clearing();
-        //add clearing the whole array here
+        
+        // Clear stored coordinates
         all_coordinates = []
+
         button = document.getElementById('clear');
         button.disabled = true;
-
         var failures = document.getElementById('failure');
         failures.value = "0";
         updateFailures();
@@ -136,6 +150,7 @@ function handleClear() {
     }
 }
 
+// Determine color of a dot; currently using linear scaling
 function determineColor(delay, round, maxDelay, maxRounds, failed = 0) {
     if (mode == "editMode") {
         return "grey";
@@ -148,19 +163,18 @@ function determineColor(delay, round, maxDelay, maxRounds, failed = 0) {
             const color = d3.scaleLinear()
             .domain([0, maxDelay/2, maxDelay])
             .range(["red", "yellow", "green"]);
-            console.log(delay, maxDelay);
             return color(delay);
         }
         if (document.getElementById('round').checked) {
             const color = d3.scaleLinear()
             .domain([1, (maxRounds+1)/2, maxRounds])
             .range(["red", "yellow", "green"]);
-            console.log(round, maxRounds);
             return color(round);
         }
     }
 }
 
+// Add a dot to the grid WITHOUT storing it internally in the list of coordinates
 function addDotRaw(xCoor, yCoor, color = "grey") {
     d3.select("#dots")
     .insert("circle", ":first-child")
@@ -172,6 +186,7 @@ function addDotRaw(xCoor, yCoor, color = "grey") {
         return tooltip.text(d.value + ": " + d.value);
       })
     .on("mousemove", function(d) {
+        // Grabbing relevant info from view_json for tooltip that shows on hover
         var display = 0
         for (var i = 0; i < view_json.length; i++) {
             display = 0
@@ -209,6 +224,7 @@ function addDotRaw(xCoor, yCoor, color = "grey") {
       });
 }
 
+// Add dot to graph and add coordinates to storage
 function addDot(xCoor, yCoor, color = "grey") {
     d3.select("#dots")
     .insert("circle", ":first-child")
@@ -216,7 +232,6 @@ function addDot(xCoor, yCoor, color = "grey") {
     .attr("cy", yCoor)
     .attr("r", 10)
     .style('fill', color);
-    //.style('fill', colorMode(100*xCoor/(width))); //manually get text coordinate
     
     button = document.getElementById('clear');
     button.disabled = false;
@@ -224,13 +239,12 @@ function addDot(xCoor, yCoor, color = "grey") {
     //adding to the global array
     xx = parseFloat(xCoor)
     yy = parseFloat(yCoor)
-    //console.log(xx,yy)
     temp = []
     temp.push(xx,yy)
-    //console.log(temp)
     all_coordinates.push(temp)
 }
 
+// Add dot through text input
 function addDotText() {
     var textInput = document.getElementById('addCoors');
     const coordinates = textInput.value.split(" ");
@@ -246,20 +260,20 @@ function addDotText() {
     textInput.value = "";
 }
 
+// Add dot through click input
 function addDotClick() {
-    //console.log("listening for clicks...")
     d3.select('svg').on("click", function(event) {
         if (mode == "editMode") {
             var coors = [d3.pointer(event)[0], d3.pointer(event)[1]];
-            //console.log("coors", coors);
+            // Found constants through trial and error, needed to use a newer version of D3 than set up for project
             if (coors[0]-62 >= 0 && coors[0]-62 <= 910 && coors[1]-13.21875 >= 0 && coors[1]-13.21875 <= 560) {
-                //console.log("adding dot clicking...")
-                addDot(coors[0]-62, coors[1]-13.21875); // found through trial and error, may need redo
+                addDot(coors[0]-62, coors[1]-13.21875); 
             }
         }
       });
 }
 
+// Delete a dot through text input
 function deleteDot() {
     var textInput = document.getElementById('delCoors');
     const coordinates = textInput.value.split(" ");
@@ -293,13 +307,14 @@ function deleteDot() {
     textInput.value = "";
 }
 
+// Run the algorithm
 function run() {
-    //console.log('running...');
     global_view_round = -1;
     global_view_failures = global_edit_failures;
     global_view_rounds = global_edit_rounds;
     create_JSON()
     view_json = []
+    // Give 5 seconds to gaurentee response
     setTimeout(function(){
         if (mode != "viewMode") {
         viewMode()
@@ -309,12 +324,12 @@ function run() {
 }, 5000)
 }
 
+// Draw the appropriate dots
 function drawPlot(viewRound = -1) {
-    console.log("when I click run .. drawplot")
-    console.log(view_json.length)
     const storeNodes = all_coordinates;
     clearing();
     if (mode == "viewMode") {
+        // Calculate max delay and max rounds for colors
         var delays = [];
         var rounds = [];
         for (var i = 0; i < view_json.length; i++) {
@@ -323,6 +338,8 @@ function drawPlot(viewRound = -1) {
         }
         const maxDelay = Math.max(...delays);
         const maxRounds = Math.max(...rounds);
+
+        // Add each dot
         for (var i = 0; i < view_json.length; i++) {
             const delay = view_json[i][5];
             const round = view_json[i][3];
@@ -341,12 +358,11 @@ function drawPlot(viewRound = -1) {
         console.log("storeNodes: ", storeNodes);
         for (const node of storeNodes) {
             addDotRaw(node[0], node[1]);
-            console.log("coors: ", node[0], node[1]);
-            console.log("mapped coors: ", x(node[0]), y(node[1]));
         }
     }
 }
 
+// Update the number of failures to run the algorithm with
 function updateFailures() {
     var failures = document.getElementById('failure');
     if (Number.isInteger(Number(failures.value)) && (Number(failures.value) > 0 || failures.value == "0")) {
@@ -365,6 +381,7 @@ function updateFailures() {
     }
 }
 
+// Update the number of rounds to run the algorithm with
 function updateRounds() {
     var rounds = document.getElementById('rounds');
     if (Number.isInteger(Number(rounds.value)) && (Number(rounds.value) > 0 || rounds.value == "0")) {
@@ -383,6 +400,7 @@ function updateRounds() {
     }
 }
 
+// Update which round of dots the user is viewing
 function updateViewRound() {
     var round = document.getElementById('addViewRound');
     console.log("first condition: ", Number.isInteger(Number(round.value)));
@@ -398,37 +416,25 @@ function updateViewRound() {
 
 }
 
+// Check if there is any edits made from a blank page (used to know whether clear should be an option)
 function isBlankCanvas() {
     return (all_coordinates.length == 0 && global_edit_failures == 0 && global_edit_rounds == 0)
 }
-
+// start listening for clicks
 addDotClick();
 
 var btn_run = document.getElementById("run")
-//btn_run.addEventListener('click', create_JSON())
 var btn_rounds = document.getElementById("rounds")
 function create_JSON() {
-    console.log("inhere")
-    //dont think i need this local rounds
-    var failures1 = document.getElementById('failure');
-    var rounds = document.getElementById('rounds');
-    //console.log(failures.value) // amount of failures to be tolerated   
-    //console.log(all_coordinates)
-    //console.log(failures1.value)
     const to_send = {
         "F": parseInt(global_edit_failures),
         "R": parseInt(global_edit_rounds),
         "Values": all_coordinates
     }
-    //console.log(to_send)
-    //console.log(to_send)
     const data = JSON.stringify(to_send)
-    //console.log(data)
     var http = new XMLHttpRequest();
     var url = 'https://jirqk5c6ik.execute-api.us-east-1.amazonaws.com/cors/helloWorld';
-    //var url1 = 'https://txen52lqrkap5b7new5teqe7rm0hdsqe.lambda-url.us-east-1.on.aws/';
     http.open('POST', url, true);
-    //http.open('POST', url1, true);
 
     //Send the proper header information along with the request
     http.setRequestHeader('Content-Type', 'application/json');
@@ -438,68 +444,20 @@ function create_JSON() {
         if (http.status != 200) { // analyze HTTP status of the response
           alert(`Error ${http.status}: ${http.statusText}`); // e.g. 404: Not Found
         } else { // show the result
-            //console.log("in http")
-            //console.log(http.response)
             data_return = http.response
             console.log(typeof(data_return))
-            // console.log((data_return.length))
             splitted = data_return.slice(11,data_return.length - 2)
-            //var splitted1 = splitted.split('],[')
-            //var splitted1 = splitted.split("[" + splitted + "]");
             var splitted1 = JSON.parse("[" + splitted + "]");
-            // console.log(splitted)
-            // console.log((splitted1))
             parse_data(splitted1);
         }
       };
-    // fetch(url)
-    // .then(
-    //     response => response.text() // .json(), .blob(), etc.
-    // )
-    //  .then(
-    //     console.log("in data"),
-    //     data => (console.log(data))
-    // )
-    // console.log("heyyy")
-    //console.log(all_coordinates)
-    
-
 }
-
-// when view is clicked, this create_json file is ran
-//btn_run.addEventListener('click', create_JSON)
 
 function parse_data (x) {
     for(var key in x) {
-        //console.log(x[key])
         view_json.push(x[key])
      }
-    // console.log("in parse")
-    console.log((view_json))
 }
-//dont know if i need this below
-// const sendHTTPRequest = (method, url, data) => {
-//     const promise = new Promise((resolve, reject) => {
-//         const xhr = new XMLHttpRequest();
-//         xhr.open(method, url);
-//         xhr.responseType = 'json';
 
-//         if(data) {
-//             xhr.setRequestHeader('Content-Type', 'application/json')
-//         }
 
-//         xhr.onload = () => {
-//             if(xhr.status >= 400) {
-//                 reject(xhr.response)
-//             } else {
-//                 resolve(xhr.response)
-//             }
-//         }
-//         xhr.onerror = () => {
-//             reject('Something went wrong')
-//         }
-//         xhr.send(JSON.stringify(data))
 
-//     })
-//     return promise;
-//}
