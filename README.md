@@ -1,5 +1,46 @@
 # VisualizedConsensus
 
+<h2>Setup</h2>
+Can be found at this link (currently unavailable): https://asikarov.github.io/VisualizedConsensus/ 
+
+Or alternatively: 
+
+Set up a local development server such as https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer 
+
+Run index.html
+
+replace the "127.0.0.1" with "localhost" in the url
+
+<h2>Usage</h2>
+There are two modes, edit mode and view mode. The edit mode allows you to set up the parameters of your consensus, while the view mode shows the output of the most recently run consensus algorithm. 
+<h3>Edit Mode</h3>
+
+Add a node by typing its coordinates
+
+Remove a node by typing its coordinates
+
+Add a node by clicking on the graph
+
+Set the maximum number of rounds by typing it in and clicking submit
+
+Set the maximum number of failures by typing it in and clicking submit
+
+Clear the nodes, number of rounds, and number of failures
+
+Run the consensus algorithm
+
+Switch to view mode (if you have already run a consensus)
+
+<h3>View Mode</h3>
+
+Select whether the color represents rounds or real time
+
+See only nodes from a specific round by typing the round in and clicking select
+
+Switch back to edit mode
+
+<h2>Documentation</h2>
+
 Our front end consist of a simple html webpage with a styling sheet and javascript to perform functions
 
 For the html page we have forms and buttons so that they can trigger their corresponding javascript functiions to store user input
