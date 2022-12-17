@@ -5,6 +5,7 @@ Our front end consist of a simple html webpage with a styling sheet and javascri
 For the html page we have forms and buttons so that they can trigger their corresponding javascript functiions to store user input
 
 For user input we have the option of rounds, maximum failures, round selection, and adding and removing nodes based on coordinates. However users can also add nodes by just clicking on the graph
+Clicking on the buttons or the graph will call their corresponding code in the javascript to perform said functions, whether to add, remove, or update certain values
 
 The run button triggers the run function which triggers the algorithm to send all the user input to the backend algorithm written in go
 
