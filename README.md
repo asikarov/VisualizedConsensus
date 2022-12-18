@@ -1,7 +1,7 @@
 # VisualizedConsensus
 
 <h2>Setup</h2>
-Can be found at this link (currently unavailable): https://asikarov.github.io/VisualizedConsensus/ 
+Can be found at this link: https://asikarov.github.io/VisualizedConsensus/ 
 
 Or alternatively: 
 
