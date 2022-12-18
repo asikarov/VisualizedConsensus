@@ -9,8 +9,6 @@ Set up a local development server such as https://marketplace.visualstudio.com/i
 
 Run index.html
 
-replace the "127.0.0.1" with "localhost" in the url
-
 <h2>Usage</h2>
 There are two modes, edit mode and view mode. The edit mode allows you to set up the parameters of your consensus, while the view mode shows the output of the most recently run consensus algorithm. 
 <h3>Edit Mode</h3>
